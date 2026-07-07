@@ -564,10 +564,6 @@ function texFinal(color, accent){ // 06/07 finish render + colour
   grad.addColorStop(0,'rgba(255,255,255,0.06)'); grad.addColorStop(1,'rgba(0,0,0,0.06)');
   ctx.fillStyle=grad; ctx.fillRect(0,0,512,512);
   noise(ctx,512,512,6);
-  if(accent){
-    ctx.fillStyle='#3a3a38';
-    ctx.fillRect(512*0.62,0,512*0.1,512);
-  }
   return c;
 }
 
@@ -635,9 +631,19 @@ const stageDefs = [
    chips:['Tynk silikonowo-silikatowy','Struktura baranek 1,5mm'],
    tex:()=>texFinal('#efe9db', true), ground:'#a99a6e', sky:'#8fb0c9',
    cam:{p:[8.6,3.2,8.6], l:[0,1.7,0]}, scaffold:'fall', revealRows:14, revealJitter:0.05},
-  {label:'09', title:'Efekt końcowy i otoczenie',
-   text:'Obróbki blacharskie, parapety, oświetlenie elewacyjne — dom gotowy, rusztowanie zdjęte, a otoczenie zagospodarowane. Tak wygląda dokończona historia ocieplenia.',
-   chips:['Obróbki blacharskie','Zagospodarowanie terenu'],
+  {label:'09', title:'Obsadzanie parapetów',
+   text:'Montaż zewnętrznych parapetów podokiennych z blachy powlekanej — osadzane ze spadkiem odprowadzającym wodę od elewacji, dokładnie pod każdym oknem.',
+   chips:['Parapet z blachy powlekanej','Spadek odwadniający'],
+   tex:()=>texFinal('#efe9db', true), ground:'#8fae63', sky:'#78a8d0',
+   cam:{p:[3.6,1.9,6.4], l:[1.4,1.1,1.6]}, sameTex:true},
+  {label:'10', title:'Podbitka i rury spadowe',
+   text:'Montaż podbitki dachowej zamykającej okap, a następnie rynien i rur spadowych odprowadzających wodę od elewacji — ostatnie obróbki blacharskie przed zdjęciem zabezpieczeń.',
+   chips:['Podbitka okapowa','Rynny i rury spadowe'],
+   tex:()=>texFinal('#efe9db', true), ground:'#8fae63', sky:'#78a8d0',
+   cam:{p:[7.4,2.1,7.6], l:[2.0,2.6,1.0]}, sameTex:true},
+  {label:'11', title:'Efekt końcowy i otoczenie',
+   text:'Parapety i oświetlenie elewacyjne gotowe, rusztowanie zdjęte, a otoczenie zagospodarowane. Tak wygląda dokończona historia ocieplenia.',
+   chips:['Oświetlenie elewacyjne','Zagospodarowanie terenu'],
    tex:()=>texFinal('#f2ede0', true), ground:'#6f9a58', sky:'#5f9bd6',
    cam:{p:[-10.2,3.6,9.8], l:[-1,1.8,0]}, scaffold:'down', revealRows:10, revealJitter:0.04},
 ];
@@ -796,24 +802,23 @@ garageWalls.position.set(garageX, G_LOW/2, 0);
 garageWalls.castShadow = true; garageWalls.receiveShadow = true;
 house.add(garageWalls);
 
-// mono-pitch roof slab: a tilted box spanning from the house eave down to the
-// garage's outer edge
-const gRoofAngle = Math.atan2(G_HIGH - G_LOW, GW);
-const gRoofLen = GW / Math.cos(gRoofAngle) + 0.5;
-const garageRoof = new THREE.Mesh(
-  new THREE.BoxGeometry(gRoofLen, 0.14, GD + 0.6),
-  roofTileMat
-);
-garageRoof.position.set(garageX, (G_LOW + G_HIGH)/2 + 0.05, 0);
-garageRoof.rotation.z = gRoofAngle;
+// garage — its own small, symmetric gable roof (same construction as the
+// main roof, just scaled down), with its ridge running parallel to the
+// main ridge. This replaces an earlier tilted lean-to slab, which both
+// looked skewed and caused a z-fighting flicker where it met the main
+// roof's underside.
+const G_RIDGE = 0.9;
+const garageRoofShape = new THREE.Shape();
+garageRoofShape.moveTo(-GW/2-0.3, 0);
+garageRoofShape.lineTo(GW/2+0.3, 0);
+garageRoofShape.lineTo(0, G_RIDGE);
+garageRoofShape.lineTo(-GW/2-0.3, 0);
+const garageRoofGeo = new THREE.ExtrudeGeometry(garageRoofShape, {depth:GD+0.5, bevelEnabled:false});
+garageRoofGeo.translate(0,0,-(GD+0.5)/2);
+const garageRoof = new THREE.Mesh(garageRoofGeo, [roofTileMat, roofTileMat]);
+garageRoof.position.set(garageX, G_LOW, 0);
 garageRoof.castShadow = true;
 house.add(garageRoof);
-
-// small gable infill where the garage roof meets the taller house wall
-const garageCapGeo = new THREE.BoxGeometry(0.2, G_HIGH - G_LOW + 0.3, GD);
-const garageCap = new THREE.Mesh(garageCapGeo, wallMat);
-garageCap.position.set(garageX + GW/2 - 0.05, G_LOW + (G_HIGH-G_LOW)/2, 0);
-house.add(garageCap);
 
 // ---------- progressive reveal overlays ----------
 // Each of these duplicates a wall surface exactly, but carries the NEXT
@@ -832,8 +837,7 @@ function makeOverlay(geo, position){
 }
 const overlayWall = makeOverlay(wallGeo, wallsMesh.position);
 const overlayGarageWall = makeOverlay(garageWallGeo, garageWalls.position);
-const overlayGarageCap = makeOverlay(garageCapGeo, garageCap.position);
-const overlays = [overlayWall, overlayGarageWall, overlayGarageCap];
+const overlays = [overlayWall, overlayGarageWall];
 let revealActive = false;
 
 // roof + gable prism
@@ -878,19 +882,70 @@ function texWood(base, dark){
 const frameWoodTex = new THREE.CanvasTexture(texWood('#7a4a28','#4a2c16'));
 const frameMat = new THREE.MeshStandardMaterial({map:frameWoodTex, roughness:0.72, side:THREE.DoubleSide});
 
-// glass: a plain, guaranteed-to-render blue pane using a standard PBR
-// material (no custom shader — removes any risk of a silent shader
-// compile failure). Double-sided so it can never disappear due to a
-// face-winding/normal-direction mistake, and it carries a faint blue
-// emissive glow so it never reads as pure black in low light either.
+// glass: instead of one flat colour, paint a procedural "reflection"
+// texture onto the pane — a sky-to-deep-water vertical gradient (what a
+// real window reflects: bright sky up top, darker below), a soft diagonal
+// sun-glare streak, a faint secondary streak for depth, and a few subtle
+// horizontal reflection bands, all lightly grained with noise. This is
+// still a plain PBR material (no custom shader — no risk of a silent
+// shader compile failure), just textured instead of solid-coloured.
+// Double-sided so it can never disappear due to a face-winding/normal
+// mistake, with a faint blue emissive glow so it never reads as pure
+// black in low light.
+function texGlass(){
+  const {c,ctx} = baseCanvas(512,512);
+
+  const sky = ctx.createLinearGradient(0,0,0,512);
+  sky.addColorStop(0,   '#cdeaf7');
+  sky.addColorStop(0.32,'#6fabd4');
+  sky.addColorStop(0.68,'#215f8c');
+  sky.addColorStop(1,   '#0f3552');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0,0,512,512);
+
+  // faint horizontal reflection bands, like distant rooflines/sky mirrored
+  // in the pane
+  for(let i=0;i<7;i++){
+    ctx.globalAlpha = 0.05;
+    ctx.fillStyle = i%2===0 ? '#ffffff' : '#06263d';
+    ctx.fillRect(0, i*512/7, 512, 512/22);
+  }
+  ctx.globalAlpha = 1;
+
+  // main diagonal sun-glare streak
+  const glare = ctx.createLinearGradient(0,512,512,0);
+  glare.addColorStop(0,    'rgba(255,255,255,0)');
+  glare.addColorStop(0.40, 'rgba(255,255,255,0)');
+  glare.addColorStop(0.50, 'rgba(255,255,255,0.62)');
+  glare.addColorStop(0.60, 'rgba(255,255,255,0)');
+  glare.addColorStop(1,    'rgba(255,255,255,0)');
+  ctx.fillStyle = glare;
+  ctx.fillRect(0,0,512,512);
+
+  // thinner, fainter secondary streak for extra depth
+  const glare2 = ctx.createLinearGradient(0,512,512,0);
+  glare2.addColorStop(0,    'rgba(255,255,255,0)');
+  glare2.addColorStop(0.12, 'rgba(255,255,255,0)');
+  glare2.addColorStop(0.17, 'rgba(255,255,255,0.28)');
+  glare2.addColorStop(0.22, 'rgba(255,255,255,0)');
+  glare2.addColorStop(1,    'rgba(255,255,255,0)');
+  ctx.fillStyle = glare2;
+  ctx.fillRect(0,0,512,512);
+
+  noise(ctx,512,512,6);
+  return c;
+}
+const glassTex = new THREE.CanvasTexture(texGlass());
+
 const glassMat = new THREE.MeshPhysicalMaterial({
-  color: 0x1c5f96,
-  metalness: 0.15,
-  roughness: 0.08,
+  map: glassTex,
+  color: 0xffffff,
+  metalness: 0.1,
+  roughness: 0.05,
   clearcoat: 1.0,
-  clearcoatRoughness: 0.06,
+  clearcoatRoughness: 0.04,
   emissive: 0x0b2f4d,
-  emissiveIntensity: 0.35,
+  emissiveIntensity: 0.15,
   side: THREE.DoubleSide
 });
 
@@ -918,16 +973,22 @@ function texGarageDoor(){
 }
 const garageDoorMat = new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(texGarageDoor()), roughness:0.65});
 
+// window sills get their own material (light painted metal, not the wood
+// frame colour) so they can be faded in during their own dedicated stage
+const sillMat = new THREE.MeshStandardMaterial({color:0xd9d5c9, roughness:0.5, metalness:0.15, transparent:true, opacity:0});
+const sillMats = [sillMat];
+const sillMeshes = [];
+
 function addOpening(x, y, w, h, {door=false, mat=null, sill=false, vSplits=1, hSplits=1} = {}, outerZ=wallOuter){
   // IMPORTANT: the wall itself is one solid box with no cut-out for these
   // openings. That means anything positioned AT or BEHIND the wall's own
   // outer face (z <= outerZ) is invisible — the wall's flat face wins the
   // depth test and hides it completely. So every part built here (frame,
-  // glass, mullions, sill, handle) must sit strictly IN FRONT of outerZ,
-  // flush against it at most, never recessed into it.
-  const frameDepth = 0.10;   // frame sits flush on the wall, sticking outward
+  // glass, mullions, sill, handle) must sit strictly IN FRONT of outerZ —
+  // but only by a hair, so it still reads as flush rather than protruding.
+  const frameDepth = 0.03;   // barely proud of the wall — flush look
   const border = 0.09;
-  const frameZ = outerZ + frameDepth/2;              // spans [outerZ, outerZ+0.10]
+  const frameZ = outerZ + frameDepth/2;              // spans [outerZ, outerZ+0.03]
   const frameBarMat = frameMat;
   const topBar = new THREE.Mesh(new THREE.BoxGeometry(w, border, frameDepth), frameBarMat);
   topBar.position.set(x, y + h/2 - border/2, frameZ);
@@ -939,12 +1000,11 @@ function addOpening(x, y, w, h, {door=false, mat=null, sill=false, vSplits=1, hS
   rightBar.position.set(x + w/2 - border/2, y, frameZ);
   [topBar,botBar,leftBar,rightBar].forEach(b=>{ b.castShadow = true; house.add(b); });
 
-  // glass / door leaf: fills the hole in the frame. Recessed relative to
-  // the frame's own front face (for a realistic reveal), but still well
-  // clear of the wall's outer surface so it's never hidden behind it.
+  // glass / door leaf: fills the hole in the frame, flush with (barely in
+  // front of) the wall surface rather than sitting proud of it.
   const leafW = w - border*2, leafH = h - border*2;
-  const leafDepth = 0.04;
-  const leafZ = outerZ + 0.03 + leafDepth/2;         // spans [outerZ+0.03, outerZ+0.07]
+  const leafDepth = 0.018;
+  const leafZ = outerZ + 0.006 + leafDepth/2;        // spans [outerZ+0.006, outerZ+0.024]
   const leafMat = mat || (door ? doorMat : glassMat);
   const leaf = new THREE.Mesh(new THREE.BoxGeometry(leafW, leafH, leafDepth), leafMat);
   leaf.position.set(x, y, leafZ);
@@ -953,48 +1013,58 @@ function addOpening(x, y, w, h, {door=false, mat=null, sill=false, vSplits=1, hS
   if(door && !mat){
     const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.015,0.18,8), new THREE.MeshStandardMaterial({color:0xb9b0a0, metalness:0.6, roughness:0.3}));
     handle.rotation.z = Math.PI/2;
-    handle.position.set(x + leafW*0.28, y, outerZ + 0.11);
+    handle.position.set(x + leafW*0.28, y, outerZ + 0.035);
     house.add(handle);
   }
 
   // slim muntin bars across real glazing (not the door, not the solid
   // garage door) so the panes read as an actual divided window
   if(!door && !mat){
-    const barZ = outerZ + 0.075;
+    const barZ = outerZ + 0.02;
     const barMat = frameMat;
     // vertical dividers: vSplits bars split the pane into (vSplits+1) columns
     for(let i=1;i<=vSplits;i++){
       const vx = x - w/2 + (w*i)/(vSplits+1);
-      const vBar = new THREE.Mesh(new THREE.BoxGeometry(0.035, leafH, 0.03), barMat);
+      const vBar = new THREE.Mesh(new THREE.BoxGeometry(0.035, leafH, 0.015), barMat);
       vBar.position.set(vx, y, barZ);
       house.add(vBar);
     }
     // horizontal dividers: hSplits bars split the pane into (hSplits+1) rows
     for(let j=1;j<=hSplits;j++){
       const hy = y - h/2 + (h*j)/(hSplits+1);
-      const hBar = new THREE.Mesh(new THREE.BoxGeometry(leafW, 0.035, 0.03), barMat);
+      const hBar = new THREE.Mesh(new THREE.BoxGeometry(leafW, 0.035, 0.015), barMat);
       hBar.position.set(x, hy, barZ);
       house.add(hBar);
     }
-    // a small projecting sill under the pane, sticking out further than the
-    // frame itself (like a real sill), so it clearly reads as a window
+    // a small sill under the pane, projecting only slightly further than
+    // the frame itself — enough to read as a sill, not enough to float.
+    // Starts hidden/opacity 0 and slightly high; its own stage fades it in
+    // and settles it down into place.
     if(sill){
-      const sillW = w + 0.3, sillD = 0.14;
-      const sillMesh = new THREE.Mesh(new THREE.BoxGeometry(sillW, 0.06, sillD), frameMat);
-      sillMesh.position.set(x, y - h/2 - 0.03, outerZ + frameDepth + sillD/2 - 0.02);
+      const sillW = w + 0.3, sillD = 0.09;
+      const sillMesh = new THREE.Mesh(new THREE.BoxGeometry(sillW, 0.05, sillD), sillMat);
+      const baseY = y - h/2 - 0.02;
+      sillMesh.position.set(x, baseY, outerZ + frameDepth + sillD/2 - 0.02);
+      sillMesh.userData.baseY = baseY;
       sillMesh.castShadow = true;
       house.add(sillMesh);
+      sillMeshes.push(sillMesh);
     }
   }
 }
-// upper-left attic window only — pulled well clear of the entrance door
-// below it so the two openings read as separate, independent cut-outs
-// in the wall instead of visually merging into one shape
-addOpening(-2.7, 2.3, 1.0, 1.4, {sill:true});
+// upper-left window — pulled well clear of the entrance door below it so
+// the two openings read as separate, independent cut-outs in the wall
+// instead of visually merging into one shape. Its sill sits at the same
+// height as the big window's sill (y - h/2 = 0.95 - 0.7 = 0.25) so both
+// windows line up on one common, level band across the facade instead of
+// floating at two different heights.
+addOpening(-2.7, 0.95, 1.0, 1.4, {sill:true});
 // ground floor: entrance door near the garage, left untouched
 addOpening(-1.0, 1.1, 1.0, 2.0, {door:true});
 // the large window on the right: real blue glazing only — its own frame,
-// sill and cross-mullions — with no second window overlapping it above
+// sill and cross-mullions — with no second window overlapping it above.
+// Same sill height as the window above (y - h/2 = 0.25) keeps both windows
+// level with one another.
 addOpening(1.9, 1.2, 2.0, 1.9, {sill:true, vSplits:1, hSplits:1});
 // garage door, on the garage's own front face
 addOpening(garageX, 1.15, GW - 0.5, 2.1, {mat:garageDoorMat}, garageOuter);
@@ -1102,6 +1172,20 @@ scene.add(apron);
 const walkStartZ = ringMaxZ;
 const walkLen = walkEndZ - walkStartZ;
 makePavedRect(walkW, walkLen, doorX, walkStartZ + walkLen/2);
+
+// entrance steps: a small two-tier stoop right at the door, closing the
+// small gap between ground level and the door's threshold
+const stepMat = new THREE.MeshStandardMaterial({color:0xcac5b7, roughness:0.9});
+const doorW = 1.0; // matches the entrance door opening's width
+function addStep(y0, y1, depth, width){
+  const h = y1 - y0;
+  const step = new THREE.Mesh(new THREE.BoxGeometry(width, h, depth), stepMat);
+  step.position.set(doorX, y0 + h/2, frontZ + depth/2);
+  step.castShadow = true; step.receiveShadow = true;
+  scene.add(step);
+}
+addStep(0, 0.05, 0.4, doorW + 0.6);
+addStep(0.05, 0.1, 0.25, doorW + 0.3);
 
 // driveway: continues from the apron's outer edge, out toward the road
 const driveLen = driveEndZ - walkStartZ;
@@ -1332,8 +1416,7 @@ const scaffoldGroup = new THREE.Group();
 house.add(scaffoldGroup);
 
 const pipeMat = new THREE.MeshStandardMaterial({color:0xd98a2b, roughness:0.55, metalness:0.35, transparent:true, opacity:1});
-const plankMat = new THREE.MeshStandardMaterial({color:0xc9a25f, roughness:0.85, transparent:true, opacity:1});
-const scaffoldMats = [pipeMat, plankMat];
+const scaffoldMats = [pipeMat];
 
 function scPole(x,y,z,h){
   const m = new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.035,h,6), pipeMat);
@@ -1348,16 +1431,11 @@ function scBar(x0,y,z0,x1,z1){
   m.rotation.y = -Math.atan2(dz,dx);
   scaffoldGroup.add(m);
 }
-function scPlatform(x,y,z,w,d){
-  const m = new THREE.Mesh(new THREE.BoxGeometry(w,0.04,d), plankMat);
-  m.position.set(x,y,z);
-  scaffoldGroup.add(m);
-}
 
 (function buildScaffold(){
   const zFront = wallOuter + 0.55, zBack = zFront + 0.6;
-  // aligned exactly with the building's own width so no pole, bar or
-  // platform ever projects past the sides of the house
+  // aligned exactly with the building's own width so no pole or bar ever
+  // projects past the sides of the house
   const xStart = -(W/2 + GW);
   const xEnd = W/2;
   const bays = Math.round((xEnd-xStart)/1.7);
@@ -1375,7 +1453,12 @@ function scPlatform(x,y,z,w,d){
       const x0 = xStart+i*bayW, x1 = xStart+(i+1)*bayW;
       scBar(x0,y,zFront, x1,zFront);
       scBar(x0,y,zBack, x1,zBack);
-      scPlatform((x0+x1)/2, y+0.03, (zFront+zBack)/2, bayW-0.06, zBack-zFront-0.02);
+    }
+    // cross braces along the front row, so the frame still reads as a
+    // properly built structure once the platform boards are gone
+    for(let i=0;i<bays;i++){
+      const x0 = xStart+i*bayW, x1 = xStart+(i+1)*bayW;
+      scBar(x0,y,zFront, x1,zBack);
     }
   });
 })();
@@ -1387,6 +1470,89 @@ function setScaffoldProgress(p){
   scaffoldGroup.scale.y = THREE.MathUtils.lerp(0.4, 1, clamped);
 }
 setScaffoldProgress(0);
+
+// ---------- soffit + gutters + downspouts ("podbitka i rury spadowe") ----------
+// its own stage, with a staged install animation: soffit boards close up
+// first, then the gutter run appears, then each downspout extends down
+// from the eave to the ground, one after another.
+const finishingGroup = new THREE.Group();
+house.add(finishingGroup);
+
+const soffitMat = new THREE.MeshStandardMaterial({color:0xe7e2d3, roughness:0.7, transparent:true, opacity:0});
+const gutterMat = new THREE.MeshStandardMaterial({color:0x9aa0a6, roughness:0.4, metalness:0.5, transparent:true, opacity:0});
+const downspoutMat = new THREE.MeshStandardMaterial({color:0x9aa0a6, roughness:0.4, metalness:0.5});
+const soffitMats = [soffitMat];
+const gutterMats = [gutterMat];
+const downspoutMeshes = [];
+
+function addSoffitRing(cx, cz, hw, hd, overhang, y){
+  // four thin boards closing the underside of the roof overhang, forming a
+  // frame around the building at eave height
+  const t = 0.03;
+  const front = new THREE.Mesh(new THREE.BoxGeometry(hw*2+overhang*2, t, overhang), soffitMat);
+  front.position.set(cx, y, cz + hd + overhang/2);
+  const back = front.clone(); back.position.z = cz - hd - overhang/2;
+  const side = new THREE.Mesh(new THREE.BoxGeometry(overhang, t, hd*2+overhang*2), soffitMat);
+  side.position.set(cx + hw + overhang/2, y, cz);
+  const side2 = side.clone(); side2.position.x = cx - hw - overhang/2;
+  [front, back, side, side2].forEach(m=>finishingGroup.add(m));
+}
+addSoffitRing(0, 0, W/2, D/2, 0.35, WH);
+addSoffitRing(garageX, 0, GW/2, GD/2, 0.3, G_LOW);
+
+function addGutterRun(x0,z0,x1,z1,y){
+  const dx=x1-x0, dz=z1-z0, len=Math.sqrt(dx*dx+dz*dz);
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,len,8), gutterMat);
+  m.position.set((x0+x1)/2, y, (z0+z1)/2);
+  m.rotation.z = Math.PI/2;
+  m.rotation.y = -Math.atan2(dz,dx);
+  finishingGroup.add(m);
+}
+// gutters along the two long eaves of the main house, and along the
+// garage's own front eave
+addGutterRun(-(W/2+0.4), D/2+0.35, (W/2+0.4), D/2+0.35, WH-0.05);
+addGutterRun(-(W/2+0.4), -D/2-0.35, (W/2+0.4), -D/2-0.35, WH-0.05);
+addGutterRun(garageX-(GW/2+0.35), D/2+0.3, garageX+(GW/2+0.35), D/2+0.3, G_LOW-0.05);
+
+function addDownspout(x,z,topY){
+  const h = topY; // runs all the way down to the ground (y=0)
+  const geo = new THREE.CylinderGeometry(0.045,0.045,h,8);
+  geo.translate(0,-h/2,0); // pivot at the top so scale.y grows downward
+  const m = new THREE.Mesh(geo, downspoutMat);
+  m.position.set(x, topY, z);
+  m.scale.y = 0;
+  finishingGroup.add(m);
+  downspoutMeshes.push(m);
+}
+addDownspout(-(W/2+0.02), D/2+0.32, WH-0.05);
+addDownspout(W/2+0.02, D/2+0.32, WH-0.05);
+addDownspout(garageX-(GW/2+0.02), D/2+0.28, G_LOW-0.05);
+
+function setFinishingProgress(p){
+  const t = THREE.MathUtils.clamp(p,0,1);
+  const soffitT = THREE.MathUtils.clamp(t/0.35, 0, 1);
+  const gutterT = THREE.MathUtils.clamp((t-0.25)/0.35, 0, 1);
+  soffitMats.forEach(m=>{ m.opacity = soffitT; });
+  gutterMats.forEach(m=>{ m.opacity = gutterT; });
+  downspoutMeshes.forEach((m,i)=>{
+    const start = 0.45 + i*0.12;
+    m.scale.y = THREE.MathUtils.clamp((t-start)/0.35, 0, 1);
+  });
+  finishingGroup.visible = t > 0.001;
+}
+setFinishingProgress(0);
+
+function setSillsProgress(p){
+  const t = THREE.MathUtils.clamp(p,0,1);
+  sillMats.forEach(m=>{ m.opacity = t; });
+  sillMeshes.forEach((m,i)=>{
+    const start = i*0.08;
+    const local = THREE.MathUtils.clamp((t-start)/0.6, 0, 1);
+    const eased = 1 - Math.pow(1-local, 3);
+    m.position.y = m.userData.baseY + (1-eased) * 0.18;
+  });
+}
+setSillsProgress(0);
 
 // ambient particles
 const PCOUNT = 260;
@@ -1550,6 +1716,24 @@ const processST = ScrollTrigger.create({
     else if(idx === 7){ scaffoldOpacity = 1 - t; }
     else { scaffoldOpacity = 0; }
     setScaffoldProgress(scaffoldOpacity);
+
+    // window sills: installed during their own dedicated stage (09), then
+    // stay settled in place for every stage after it
+    const sillsIdx = 8;
+    let sillsProgress;
+    if(idx < sillsIdx){ sillsProgress = 0; }
+    else if(idx === sillsIdx){ sillsProgress = t; }
+    else { sillsProgress = 1; }
+    setSillsProgress(sillsProgress);
+
+    // soffit + gutters + downspouts: installed during their own dedicated
+    // stage (10), then stay in place for every stage after it
+    const finishingIdx = 9;
+    let finishingProgress;
+    if(idx < finishingIdx){ finishingProgress = 0; }
+    else if(idx === finishingIdx){ finishingProgress = t; }
+    else { finishingProgress = 1; }
+    setFinishingProgress(finishingProgress);
   }
 });
 
