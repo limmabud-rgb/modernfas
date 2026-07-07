@@ -226,10 +226,6 @@
   @media (max-width:900px){.specs-grid{grid-template-columns:repeat(2,1fr);}}
 
   /* ---------- gallery / final ---------- */
-  #finale{height:100vh;display:flex;align-items:flex-end;}
-  .finale-inner{padding:0 5vw 10vh;display:flex;justify-content:space-between;align-items:flex-end;width:100%;gap:40px;flex-wrap:wrap;}
-  .finale-inner h2{font-size:clamp(34px,5vw,64px);max-width:640px;}
-  .finale-inner h2 em{font-style:normal;color:var(--amber);}
   .cta-btn{
     font-size:13px;letter-spacing:.05em;white-space:nowrap;
     padding:18px 30px;border-radius:999px;background:var(--amber);color:#14110a;font-weight:600;
@@ -242,6 +238,7 @@
   #realizations{padding:18vh 5vw;min-height:100vh;}
   .real-head{max-width:640px;margin-bottom:8vh;}
   .real-head h2{font-size:clamp(30px,4vw,50px);margin-top:16px;}
+  .real-head h2 em{font-style:normal;color:var(--amber);}
   .real-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
   .real-slot{
     aspect-ratio:4/3;border-radius:14px;border:1px dashed var(--line);
@@ -270,6 +267,22 @@
   .team-avatar:nth-child(2){background:var(--stone);margin-left:-22px;}
   .team-card h3{font-size:clamp(20px,2.4vw,28px);margin-bottom:10px;}
   .team-card p{font-size:14.5px;line-height:1.65;color:var(--paper-dim);max-width:560px;}
+
+  /* ---------- contact ---------- */
+  #contact{padding:4vh 5vw 18vh;}
+  .contact-card{
+    display:flex;align-items:center;gap:48px;padding:44px 40px;flex-wrap:wrap;
+  }
+  .contact-col{display:flex;flex-direction:column;gap:6px;}
+  .contact-col h4{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--paper-dim);margin-bottom:2px;text-transform:uppercase;}
+  .contact-col a,.contact-col p{font-size:18px;color:var(--paper);transition:color .3s;}
+  .contact-col a:hover{color:var(--amber);}
+  .contact-card .cta-btn{margin-left:auto;}
+  @media (max-width:860px){
+    .contact-card{gap:28px;padding:32px 26px;}
+    .contact-col a,.contact-col p{font-size:15px;}
+    .contact-card .cta-btn{margin-left:0;}
+  }
 
   /* ---------- footer ---------- */
   footer{
@@ -304,9 +317,9 @@
       <li><a href="#process">Proces</a></li>
       <li><a href="#specs">Specyfikacja</a></li>
       <li><a href="#realizations">Realizacje</a></li>
-      <li><a href="#finale">Kontakt</a></li>
+      <li><a href="#contact">Kontakt</a></li>
     </ul></nav>
-    <a href="#finale" class="nav-cta">Bezpłatna wycena</a>
+    <a href="#contact" class="nav-cta">Bezpłatna wycena</a>
   </div>
 </header>
 
@@ -402,10 +415,26 @@
     </div>
   </section>
 
-  <!-- FINALE -->
-  <section id="finale">
-    <div class="finale-inner">
-      <h2>Zobacz swój dom<br><em>po drugiej stronie</em> ocieplenia.</h2>
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="real-head">
+      <div class="eyebrow">Skontaktuj się z nami</div>
+      <h2>Porozmawiajmy<br><em>o Twojej elewacji</em>.</h2>
+    </div>
+    <div class="contact-card glass">
+      <div class="contact-col">
+        <h4>Telefon</h4>
+        <a href="tel:+48516472845">516 472 845</a>
+        <a href="tel:+48533139174">533 139 174</a>
+      </div>
+      <div class="contact-col">
+        <h4>E-mail</h4>
+        <a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a>
+      </div>
+      <div class="contact-col">
+        <h4>Zasięg</h4>
+        <p>Realizacje w całej Polsce</p>
+      </div>
       <a href="mailto:modernfas1@gmail.com?subject=Bezp%C5%82atny%20audyt%20energetyczny" class="cta-btn">Umów bezpłatny audyt energetyczny →</a>
     </div>
   </section>
