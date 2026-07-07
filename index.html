@@ -176,9 +176,20 @@
   .chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;color:var(--stone);}
 
   @media (max-width:860px){
-    .stage-card{right:5vw;width:80vw;top:auto;bottom:14vh;transform:translateY(20px);}
+    .stage-card{
+      right:5vw; left:5vw; width:auto;
+      top:auto; bottom:12vh;
+      transform:translateY(20px);
+      max-height:42vh; overflow-y:auto;
+      padding:20px 22px;
+    }
     .stage-card.active{transform:translateY(0);}
-    .rail{left:5vw;top:auto;bottom:34vh;flex-direction:row;}
+    .stage-card .eyebrow{margin-bottom:8px;}
+    .stage-card h3{font-size:20px;margin-bottom:8px;line-height:1.2;}
+    .stage-card p{font-size:12.5px;line-height:1.55;}
+    .stage-chips{margin-top:12px;gap:6px;}
+    .chip{font-size:9.5px;padding:5px 8px;}
+    .rail{left:5vw;top:78px;bottom:auto;flex-direction:row;}
   }
 
   .play-btn{
@@ -622,7 +633,28 @@ scene.fog = new THREE.Fog(0x9aa4ab, 16, 55);
    buffer of precision at these scales, which is what made the window panes
    and frames flicker/"jump" as the camera moved. */
 const camera = new THREE.PerspectiveCamera(42, window.innerWidth/window.innerHeight, 0.3, 90);
-camera.position.set(7.6,3.0,7.6);
+
+// The stage camera positions below were framed against a wide (desktop-ish)
+// aspect ratio. A PerspectiveCamera's fov is vertical, so on a narrow
+// portrait phone screen the effective horizontal field of view is much
+// tighter — same fov, less width — which is why only a cropped fragment of
+// the house used to show up on mobile. To compensate, we push the camera
+// further back from its look target as the aspect ratio gets narrower than
+// that reference, without changing fov or the look direction.
+const REF_ASPECT = 1.6;
+function computeCamScale(){
+  const aspect = window.innerWidth/window.innerHeight;
+  if(aspect >= REF_ASPECT) return 1;
+  return THREE.MathUtils.clamp(REF_ASPECT/aspect, 1, 2.4);
+}
+let camScale = computeCamScale();
+let lastCamRaw = {x:7.6,y:3.0,z:7.6};
+
+camera.position.set(
+  0 + (7.6-0)*camScale,
+  1.5 + (3.0-1.5)*camScale,
+  0 + (7.6-0)*camScale
+);
 let lookTarget = new THREE.Vector3(0,1.5,0);
 camera.lookAt(lookTarget);
 
@@ -1459,11 +1491,15 @@ const processST = ScrollTrigger.create({
     const px = THREE.MathUtils.lerp(a.p[0], b.p[0], t);
     const py = THREE.MathUtils.lerp(a.p[1], b.p[1], t);
     const pz = THREE.MathUtils.lerp(a.p[2], b.p[2], t);
-    camera.position.set(px,py,pz);
-    lookTarget.set(
-      THREE.MathUtils.lerp(a.l[0], b.l[0], t),
-      THREE.MathUtils.lerp(a.l[1], b.l[1], t),
-      THREE.MathUtils.lerp(a.l[2], b.l[2], t)
+    const lx = THREE.MathUtils.lerp(a.l[0], b.l[0], t);
+    const ly = THREE.MathUtils.lerp(a.l[1], b.l[1], t);
+    const lz = THREE.MathUtils.lerp(a.l[2], b.l[2], t);
+    lastCamRaw.x = px; lastCamRaw.y = py; lastCamRaw.z = pz;
+    lookTarget.set(lx, ly, lz);
+    camera.position.set(
+      lx + (px-lx)*camScale,
+      ly + (py-ly)*camScale,
+      lz + (pz-lz)*camScale
     );
 
     // ground / sky lerp (grass grows in late in the sequence)
@@ -1586,6 +1622,12 @@ window.addEventListener('resize', ()=>{
   camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  camScale = computeCamScale();
+  camera.position.set(
+    lookTarget.x + (lastCamRaw.x-lookTarget.x)*camScale,
+    lookTarget.y + (lastCamRaw.y-lookTarget.y)*camScale,
+    lookTarget.z + (lastCamRaw.z-lookTarget.z)*camScale
+  );
 });
 
 /* =========================================================
