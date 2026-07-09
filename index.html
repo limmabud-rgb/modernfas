@@ -2,1857 +2,863 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>MODERNFAS — Elewacje, które oddychają ciepłem</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MODERNFAS — Ocieplenia elewacji warstwa po warstwie</title>
+<meta name="description" content="Zobacz, jak dom rozkłada się do surowej ściany i wraca do życia — etap po etapie systemu ociepleń ETICS. Modernfas: grafitowy styropian, precyzyjny montaż, gwarancja.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0b0d10;
-    --bg-soft:#12151a;
-    --paper:#f2f0ea;
-    --paper-dim:#c7c4ba;
-    --stone:#a9a396;
-    --line:rgba(242,240,234,0.14);
-    --amber:#e2a13d;
-    --amber-dim:#8a6a30;
-    --cold:#3f77c9;
-    --hot:#e2552b;
-    --radius:18px;
-    --ease-cine: cubic-bezier(.16,.84,.32,1);
-  }
+:root {
+  --concrete: #d4cfc8;
+  --concrete-dim: #9e9890;
+  --stone: #706050;
+  --charcoal: #1a1816;
+  --ink: #0e0d0c;
+  --warm-white: #f4f0ea;
+  --warm-white-dim: #c8c0b4;
+  --accent: #cf8a3f;                     /* ciepły bursztyn — drewno z elewacji */
+  --accent-glow: rgba(207, 138, 63, 0.35);
+  --accent-soft: rgba(207, 138, 63, 0.08);
+  --graphite-blue: #8fa3b8;              /* grafit dachu i styropianu */
+  --gold-warm: #c89848;
+  --heading: 'Playfair Display', 'Georgia', serif;
+  --body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: auto; }
+body {
+  background: var(--ink);
+  color: var(--warm-white);
+  font-family: var(--body);
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (max-width: 768px), (pointer: coarse) {
+  body { cursor: auto; }
+  #cursor-dot, #cursor-ring { display: none !important; }
+}
+::selection { background: var(--accent-glow); color: var(--warm-white); }
 
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--bg);
-    color:var(--paper);
-    font-family:'Inter',sans-serif;
-    overflow-x:hidden;
-    cursor:default;
-    text-shadow:0 2px 14px rgba(0,0,0,.6), 0 1px 4px rgba(0,0,0,.45);
-  }
-  ::selection{background:var(--amber);color:#14110a;}
+/* ---------- Custom cursor ---------- */
+#cursor-dot {
+  position: fixed; width: 6px; height: 6px; border-radius: 50%;
+  background: #fff; z-index: 9998; pointer-events: none;
+  transform: translate(-50%, -50%); mix-blend-mode: difference;
+}
+#cursor-ring {
+  position: fixed; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(244, 240, 234, 0.35); z-index: 9997; pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: width .35s ease, height .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+#cursor-ring.hover {
+  width: 56px; height: 56px;
+  border-color: var(--accent);
+  box-shadow: 0 0 24px var(--accent-glow);
+}
 
-  .eyebrow{
-    font-family:'JetBrains Mono',monospace;
-    font-size:11px;
-    letter-spacing:.22em;
-    text-transform:uppercase;
-    color:var(--amber);
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  .eyebrow::before{content:'';width:22px;height:1px;background:var(--amber);display:inline-block;}
+/* ---------- Ambient overlays ---------- */
+#grain {
+  position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+#vignette {
+  position: fixed; inset: 0; z-index: 99; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(14, 13, 12, 0.45) 100%);
+}
+#particles { position: fixed; inset: 0; z-index: 15; pointer-events: none; opacity: .4; }
 
-  h1,h2,h3{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:600;
-    letter-spacing:-.01em;
-    line-height:1.05;
-  }
+/* ---------- Loader ---------- */
+#loader {
+  position: fixed; inset: 0; z-index: 9999; background: var(--ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 22px; transition: opacity .9s ease, filter .9s ease;
+}
+#loader.done { opacity: 0; filter: blur(8px); pointer-events: none; }
+#loader .line { width: 1px; height: 48px; background: linear-gradient(to bottom, transparent, var(--stone)); }
+#loader .line.bottom { background: linear-gradient(to top, transparent, var(--stone)); }
+#loader .brand {
+  font-family: var(--heading); font-weight: 300; letter-spacing: .45em;
+  font-size: 22px; text-transform: uppercase; padding-left: .45em;
+}
+#loader .sub {
+  font-size: 9px; letter-spacing: .35em; text-transform: uppercase; color: var(--concrete-dim);
+  padding-left: .35em;
+}
+#loader .bar { width: 140px; height: 1px; background: rgba(244,240,234,.1); overflow: hidden; }
+#loader .bar i {
+  display: block; height: 100%; width: 0%;
+  background: linear-gradient(to right, var(--accent), var(--graphite-blue));
+  transition: width .3s ease;
+}
+#loader .pct { font-size: 10px; letter-spacing: .25em; color: var(--concrete-dim); }
 
-  a{color:inherit;text-decoration:none;}
-  button{font-family:inherit;}
+/* ---------- Film overlay ---------- */
+#film-layer {
+  position: fixed; inset: 0; z-index: 80; background: var(--ink);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .5s ease, visibility 0s linear .5s;
+}
+#film-layer.on { opacity: 1; visibility: visible; transition: opacity .5s ease, visibility 0s; }
+#film-layer video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  /* ---------- preloader ---------- */
-  #preloader{
-    position:fixed;inset:0;background:var(--bg);z-index:999;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
-    transition:opacity .9s var(--ease-cine), visibility .9s var(--ease-cine);
-  }
-  #preloader.hide{opacity:0;visibility:hidden;pointer-events:none;}
-  .pl-mark{font-family:'Space Grotesk';font-size:14px;letter-spacing:.3em;color:var(--paper-dim);text-transform:uppercase;}
-  .pl-bar{width:220px;height:1px;background:var(--line);position:relative;overflow:hidden;}
-  .pl-bar span{position:absolute;left:0;top:0;height:100%;width:0%;background:var(--amber);}
+/* ---------- Play button ---------- */
+#play-btn {
+  position: fixed; left: 28px; bottom: 28px; z-index: 90;
+  display: flex; align-items: center; gap: 14px;
+  background: none; border: none; padding: 0; cursor: none;
+  font-family: var(--body); color: var(--warm-white);
+}
+@media (max-width: 768px), (pointer: coarse) { #play-btn { cursor: pointer; left: 16px; bottom: 16px; } }
+#play-btn .disc {
+  width: 54px; height: 54px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(14, 13, 12, 0.55);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border: 1px solid rgba(244, 240, 234, 0.18);
+  transition: border-color .4s ease, box-shadow .4s ease, transform .4s ease;
+}
+#play-btn:hover .disc { border-color: var(--accent); box-shadow: 0 0 26px var(--accent-glow); transform: scale(1.06); }
+#play-btn svg { width: 16px; height: 16px; fill: var(--warm-white); }
+#play-btn .ic-pause { display: none; }
+#play-btn.playing .ic-play { display: none; }
+#play-btn.playing .ic-pause { display: block; }
+#play-btn .plabel {
+  font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--warm-white-dim); transition: opacity .6s ease;
+  text-shadow: 0 1px 10px rgba(14,13,12,.7);
+}
+#play-btn.playing .plabel, #play-btn.used .plabel { opacity: 0; }
+@media (max-width: 768px) { #play-btn .plabel { display: none; } #play-btn .disc { width: 48px; height: 48px; } }
 
-  /* ---------- 3d canvas ---------- */
-  #scene-canvas{
-    position:fixed;inset:0;width:100vw;height:100vh;z-index:1;
-    display:block;
-  }
+/* ---------- Chapter markers ---------- */
+#chapters {
+  position: fixed; right: 28px; top: 50%; transform: translateY(-50%);
+  z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 0;
+  opacity: 0; transition: opacity .8s ease;
+}
+#chapters.on { opacity: 1; }
+#chapters .dot {
+  width: 7px; height: 7px; border-radius: 50%; border: 1px solid rgba(244,240,234,.3);
+  background: transparent; position: relative; transition: all .4s ease;
+}
+#chapters .dot.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 14px var(--accent-glow); }
+#chapters .dot .lbl {
+  position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  font-size: 8px; letter-spacing: .25em; text-transform: uppercase; white-space: nowrap;
+  color: var(--warm-white-dim); opacity: 0; transition: opacity .3s ease; pointer-events: none;
+}
+#chapters .dot:hover .lbl { opacity: 1; }
+#chapters .link { position: relative; width: 1px; height: 34px; background: rgba(244,240,234,.12); overflow: hidden; }
+#chapters .link i { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: var(--accent); }
+@media (max-width: 768px) { #chapters { right: 12px; } #chapters .link { height: 24px; } }
 
-  /* ---------- nav ---------- */
-  header{
-    position:fixed;top:0;left:0;right:0;z-index:50;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:22px 5vw;
-    background:linear-gradient(to bottom, rgba(11,13,16,.7), transparent);
-  }
-  .logo{font-family:'Space Grotesk';font-weight:700;font-size:18px;letter-spacing:.02em;}
-  .logo span{color:var(--amber);}
-  nav ul{display:flex;gap:34px;list-style:none;}
-  nav a{font-size:13px;color:var(--paper-dim);transition:color .3s;}
-  nav a:hover{color:var(--paper);}
-  .nav-cta{
-    font-size:12px;letter-spacing:.06em;
-    border:1px solid var(--line);
-    padding:10px 18px;border-radius:999px;
-    backdrop-filter:blur(10px);
-    background:rgba(242,240,234,.04);
-    transition:all .35s var(--ease-cine);
-  }
-  .nav-cta:hover{background:var(--amber);border-color:var(--amber);color:#14110a;}
-  .nav-links{display:flex;align-items:center;gap:34px;}
-  @media (max-width:860px){
-    nav ul{gap:16px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; max-width:44vw;}
-    nav ul::-webkit-scrollbar{display:none;}
-    nav a{font-size:11px; white-space:nowrap;}
-    .nav-links{gap:14px;}
-    .nav-cta{padding:8px 12px; font-size:10px; white-space:nowrap;}
-    header{padding:16px 4vw;}
-  }
+/* ---------- Animation section ---------- */
+#anim { position: relative; height: 650vh; }
+#canvas-wrap { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+#frame-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.ov { position: absolute; inset: 0; pointer-events: none; }
+#ov-left { z-index: 1; background: linear-gradient(to right, rgba(14,13,12,.8) 0%, rgba(14,13,12,.38) 38%, transparent 64%); }
+#ov-bottom { z-index: 1; background: linear-gradient(to top, rgba(14,13,12,.66) 0%, transparent 26%); }
+#ov-tint { z-index: 5; opacity: .06; background: linear-gradient(135deg, var(--accent), var(--graphite-blue)); transition: opacity 1.2s ease; }
 
-  /* ---------- generic content layer ---------- */
-  .content{position:relative;z-index:5;pointer-events:none;}
-  .content a, .content button{pointer-events:auto;}
-  section{position:relative;scroll-margin-top:90px;}
+/* ---------- Scroll text ---------- */
+.stext {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 10;
+  display: flex; align-items: center; pointer-events: none;
+  opacity: 0; visibility: hidden;
+  filter: blur(6px); transform: translateX(-20px);
+  transition: opacity .9s ease, filter .9s ease, transform .9s ease, visibility 0s linear .9s;
+}
+.stext.visible {
+  opacity: 1; visibility: visible; filter: blur(0); transform: translateX(0);
+  transition: opacity .9s ease, filter .9s ease, transform .9s ease, visibility 0s;
+}
+.stext .inner { margin-left: 6%; max-width: 560px; pointer-events: auto; text-shadow: 0 1px 14px rgba(14,13,12,.55); }
+.stext.center { justify-content: center; text-align: center; }
+.stext.center .inner {
+  margin-left: 0; padding: 44px 48px; max-width: 680px;
+  background: rgba(14, 13, 12, 0.55);
+  -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
+  border: 1px solid rgba(244, 240, 234, 0.07);
+}
+@media (max-width: 768px) { .stext.center .inner { padding: 30px 18px; } }
+.overline {
+  font-size: 9px; letter-spacing: .35em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 18px; font-weight: 500;
+}
+.stitle { font-family: var(--heading); font-weight: 300; font-size: clamp(30px, 3.4vw, 46px); line-height: 1.15; margin-bottom: 18px; }
+.stitle i { font-style: italic; color: var(--warm-white-dim); }
+.sbody { font-size: 14px; line-height: 1.85; color: var(--warm-white-dim); max-width: 46ch; }
 
-  /* ---------- glass panel ---------- */
-  .glass{
-    background:rgba(18,21,26,.42);
-    border:1px solid var(--line);
-    backdrop-filter:blur(18px) saturate(140%);
-    -webkit-backdrop-filter:blur(18px) saturate(140%);
-    border-radius:var(--radius);
-  }
+/* Hero */
+#s-hero .title {
+  font-family: var(--heading); font-weight: 300;
+  font-size: clamp(42px, 5.5vw, 76px); letter-spacing: .08em; line-height: 1.05;
+}
+#s-hero .title .ch { display: inline-block; opacity: 0; transform: translateY(24px) rotate(3deg); transition: opacity .7s ease, transform .7s ease; }
+#s-hero.visible .title .ch { opacity: 1; transform: translateY(0) rotate(0); }
+#s-hero .tagline { margin-top: 20px; font-size: 15px; line-height: 1.8; color: var(--warm-white-dim); max-width: 42ch; }
+#s-hero .scroll-hint { margin-top: 34px; display: flex; align-items: center; gap: 14px; font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--concrete-dim); }
+#s-hero .scroll-hint .ln { width: 46px; height: 1px; background: var(--stone); position: relative; overflow: hidden; }
+#s-hero .scroll-hint .ln i { position: absolute; inset: 0; background: var(--accent); animation: hintslide 2.2s ease-in-out infinite; }
+@keyframes hintslide { 0% { transform: translateX(-100%);} 55% { transform: translateX(100%);} 100% { transform: translateX(100%);} }
+#stat-bar {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 11;
+  display: flex; justify-content: center; gap: clamp(24px, 5vw, 84px);
+  padding: 22px 24px;
+  background: rgba(244, 240, 234, 0.03);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(244, 240, 234, 0.06);
+}
+#stat-bar .stat { text-align: center; }
+#stat-bar .num { font-family: var(--heading); font-size: clamp(20px, 2.2vw, 30px); font-weight: 400; color: var(--warm-white); }
+#stat-bar .num em { font-style: normal; font-size: .6em; color: var(--accent); }
+#stat-bar .cap { margin-top: 5px; font-size: 8px; letter-spacing: .25em; text-transform: uppercase; color: var(--concrete-dim); }
 
-  /* ---------- hero ---------- */
-  #hero{height:100vh;display:flex;flex-direction:column;justify-content:flex-end;pointer-events:none;position:relative;}
-  #hero::before{
-    content:'';position:absolute;inset:0;
-    background:linear-gradient(100deg, rgba(11,13,16,.78) 0%, rgba(11,13,16,.5) 34%, rgba(11,13,16,.08) 62%, rgba(11,13,16,0) 78%);
-    pointer-events:none;
-  }
-  .hero-inner{padding:0 5vw 8vh;max-width:900px;position:relative;z-index:1;}
-  .hero-inner .eyebrow{text-shadow:0 2px 12px rgba(0,0,0,.6);}
-  .hero-inner h1{font-size:clamp(38px,6.4vw,86px);text-shadow:0 8px 34px rgba(0,0,0,.6), 0 2px 10px rgba(0,0,0,.5);}
-  .hero-inner h1 em{font-style:normal;color:var(--amber);}
-  .hero-sub{margin-top:22px;max-width:480px;color:var(--paper-dim);font-size:15px;line-height:1.6;text-shadow:0 2px 14px rgba(0,0,0,.65);}
-  .scroll-cue{
-    position:absolute;bottom:6vh;left:5vw;
-    display:flex;align-items:center;gap:12px;
-    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--paper-dim);
-    letter-spacing:.1em;
-  }
-  .scroll-cue .line{width:1px;height:40px;background:var(--line);position:relative;overflow:hidden;}
-  .scroll-cue .line span{position:absolute;top:-100%;left:0;width:100%;height:100%;background:var(--amber);
-    animation:scrollcue 1.8s var(--ease-cine) infinite;}
-  @keyframes scrollcue{ 0%{top:-100%;} 60%{top:100%;} 100%{top:100%;} }
+/* Vision */
+#s-vision .qmark { font-family: var(--heading); font-size: 110px; line-height: .6; color: var(--accent); opacity: .5; margin-bottom: 8px; }
+#s-vision .quote { font-family: var(--heading); font-style: italic; font-weight: 300; font-size: clamp(22px, 2.6vw, 34px); line-height: 1.5; }
+#s-vision .div { width: 56px; height: 1px; background: var(--accent); margin: 26px 0 14px; }
+#s-vision .attr { font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--concrete-dim); }
 
-  /* ---------- process section ---------- */
-  #process{height:800vh;}
-  .process-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;}
+/* Details — feature list */
+.flist { margin-top: 26px; }
+.flist .item {
+  display: flex; gap: 18px; align-items: baseline;
+  padding: 14px 0; border-bottom: 1px solid rgba(244,240,234,.07);
+}
+.flist .item:first-child { border-top: 1px solid rgba(244,240,234,.07); }
+.flist .no { font-family: var(--heading); font-size: 13px; color: var(--accent); min-width: 26px; }
+.flist .fname { font-size: 13px; font-weight: 500; letter-spacing: .04em; }
+.flist .fdesc { font-size: 12px; color: var(--concrete-dim); margin-top: 3px; line-height: 1.6; }
 
-  .rail{
-    position:absolute;left:5vw;top:50%;transform:translateY(-50%);
-    display:flex;flex-direction:column;gap:16px;z-index:10;
-  }
-  .rail-item{display:flex;align-items:center;gap:12px;opacity:.35;transition:opacity .4s;}
-  .rail-item.active{opacity:1;}
-  .rail-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--paper-dim);width:18px;}
-  .rail-item.active .rail-num{color:var(--amber);}
-  .rail-dot{width:6px;height:6px;border-radius:50%;background:var(--paper-dim);}
-  .rail-item.active .rail-dot{background:var(--amber);box-shadow:0 0 10px var(--amber);}
+/* Grid — glass cells */
+.ggrid { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 520px; }
+.gcell {
+  background: rgba(14, 13, 12, 0.55);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border: 1px solid rgba(244, 240, 234, 0.08);
+  padding: 18px 16px; transition: background .4s ease, border-color .4s ease;
+}
+.gcell:hover { background: rgba(14, 13, 12, 0.7); border-color: rgba(207, 138, 63, 0.35); }
+.gcell .ico { font-size: 16px; color: var(--accent); margin-bottom: 10px; font-family: var(--heading); }
+.gcell .gname { font-size: 12px; font-weight: 500; letter-spacing: .05em; margin-bottom: 5px; }
+.gcell .gdesc { font-size: 11px; color: var(--concrete-dim); line-height: 1.55; }
 
-  .stage-card{
-    position:absolute;right:6vw;top:50%;transform:translateY(-50%) translateY(24px);
-    width:min(420px,38vw);
-    padding:34px 32px;
-    opacity:0;
-    transition:opacity .6s var(--ease-cine), transform .7s var(--ease-cine);
-  }
-  .stage-card.active{opacity:1;transform:translateY(-50%) translateY(0);}
-  .stage-card .eyebrow{margin-bottom:14px;}
-  .stage-card h3{font-size:26px;margin-bottom:14px;}
-  .stage-card p{font-size:14px;line-height:1.65;color:var(--paper-dim);}
-  .stage-chips{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;}
-  .chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;color:var(--stone);}
+/* Context — dotted list */
+.dlist { margin-top: 26px; max-width: 460px; }
+.dlist .row { display: flex; align-items: baseline; gap: 10px; padding: 11px 0; font-size: 13px; }
+.dlist .k { color: var(--warm-white); font-weight: 500; white-space: nowrap; }
+.dlist .dots { flex: 1; border-bottom: 1px dotted rgba(244,240,234,.22); transform: translateY(-3px); }
+.dlist .v { color: var(--concrete-dim); font-size: 12px; white-space: nowrap; }
 
-  @media (max-width:860px){
-    .stage-card{
-      right:5vw; left:5vw; width:auto;
-      top:auto; bottom:12vh;
-      transform:translateY(20px);
-      max-height:42vh; overflow-y:auto;
-      padding:20px 22px;
-    }
-    .stage-card.active{transform:translateY(0);}
-    .stage-card .eyebrow{margin-bottom:8px;}
-    .stage-card h3{font-size:20px;margin-bottom:8px;line-height:1.2;}
-    .stage-card p{font-size:12.5px;line-height:1.55;}
-    .stage-chips{margin-top:12px;gap:6px;}
-    .chip{font-size:9.5px;padding:5px 8px;}
-    .rail{left:5vw;top:78px;bottom:auto;flex-direction:row;}
-  }
+/* CTA */
+#s-cta .stitle { font-size: clamp(34px, 4.4vw, 60px); }
+#s-cta .sub { margin-top: 14px; font-size: 14px; color: var(--warm-white-dim); }
+#s-cta .btns { margin-top: 34px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-block; padding: 15px 34px; font-family: var(--body); font-size: 10px;
+  letter-spacing: .28em; text-transform: uppercase; font-weight: 500;
+  text-decoration: none; transition: all .4s ease; cursor: none;
+}
+@media (max-width: 768px), (pointer: coarse) { .btn { cursor: pointer; } }
+.btn.primary { background: var(--accent); color: var(--ink); }
+.btn.primary:hover { box-shadow: 0 0 34px var(--accent-glow); transform: translateY(-2px); }
+.btn.ghost { border: 1px solid rgba(244,240,234,.35); color: var(--warm-white); background: rgba(14,13,12,.45); }
+.btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
+#s-cta .card {
+  margin: 44px auto 0; max-width: 380px; padding: 22px 26px;
+  background: rgba(14, 13, 12, 0.35);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border: 1px solid rgba(244, 240, 234, 0.1);
+}
+#s-cta .card .cname { font-family: var(--heading); font-size: 17px; letter-spacing: .18em; }
+#s-cta .card .crole { margin-top: 4px; font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--accent); }
+#s-cta .card .cdet { margin-top: 12px; font-size: 12px; line-height: 1.9; color: var(--concrete-dim); }
 
-  .play-btn{
-    position:absolute; left:5vw; bottom:8vh; z-index:12;
-    display:flex; align-items:center; gap:10px;
-    padding:13px 22px;
-    background:rgba(18,18,20,0.55);
-    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-    border:1px solid var(--line);
-    border-radius:999px;
-    color:var(--paper);
-    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
-    cursor:pointer;
-    transition:border-color .3s, background .3s, opacity .3s;
-  }
-  .play-btn:hover{border-color:var(--amber); background:rgba(18,18,20,0.75);}
-  .play-btn-icon{color:var(--amber); font-size:11px; transition:transform .2s;}
-  .play-btn.is-playing .play-btn-icon{font-size:10px;}
-  .play-btn.is-playing{border-color:var(--amber);}
+/* ---------- Gallery ---------- */
+#gallery { position: relative; background: var(--ink); padding: 110px 6% 90px; z-index: 20; }
+#gallery .head { max-width: 520px; margin-bottom: 54px; }
+#gallery .grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 200px; gap: 12px; }
+#gallery figure {
+  position: relative; overflow: hidden; opacity: 0; transform: translateY(34px);
+  transition: opacity 1s ease, transform 1s ease; margin: 0;
+}
+#gallery figure.reveal { opacity: 1; transform: translateY(0); }
+#gallery figure.tall { grid-row: span 2; }
+#gallery img, #gallery .ph { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s ease; will-change: transform; }
+#gallery figure:hover img, #gallery figure:hover .ph { transform: scale(1.03); }
+#gallery .ph {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  padding-bottom: 40px; box-sizing: border-box;
+  background: rgba(244, 240, 234, 0.025);
+  border: 1px dashed rgba(244, 240, 234, 0.14);
+}
+#gallery .ph .ph-ico { font-size: 18px; color: var(--accent); opacity: .7; }
+#gallery .ph .ph-txt { font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--concrete-dim); text-align: center; line-height: 2; }
+#gallery figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 16px 12px;
+  background: linear-gradient(to top, rgba(14,13,12,.8), transparent);
+  font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--warm-white-dim);
+}
+@media (max-width: 768px) {
+  #gallery .grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 140px; }
+}
 
-  @media (max-width:860px){
-    .play-btn{left:5vw; bottom:6vh; padding:11px 18px; font-size:11px;}
-  }
+/* ---------- Footer ---------- */
+footer {
+  background: var(--charcoal); padding: 54px 6%; z-index: 20; position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+footer .fbrand { font-family: var(--heading); font-weight: 300; letter-spacing: .4em; font-size: 18px; text-transform: uppercase; padding-left: .4em; }
+footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-dim); text-align: center; }
 
-
-  /* ---------- specs section ---------- */
-  #specs{padding:18vh 5vw;min-height:100vh;}
-  .specs-head{max-width:640px;margin-bottom:8vh;}
-  .specs-head h2{font-size:clamp(30px,4vw,50px);margin-top:16px;}
-  .specs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
-  .spec{background:rgba(18,21,26,.55);backdrop-filter:blur(14px);padding:30px 26px;min-height:190px;display:flex;flex-direction:column;justify-content:space-between;}
-  .spec .num{font-family:'Space Grotesk';font-size:38px;color:var(--amber);}
-  .spec .lbl{font-size:12.5px;color:var(--paper-dim);line-height:1.5;margin-top:14px;}
-  @media (max-width:900px){.specs-grid{grid-template-columns:repeat(2,1fr);}}
-
-  /* ---------- gallery / final ---------- */
-  .cta-btn{
-    font-size:13px;letter-spacing:.05em;white-space:nowrap;
-    padding:18px 30px;border-radius:999px;background:var(--amber);color:#14110a;font-weight:600;
-    transition:transform .4s var(--ease-cine), box-shadow .4s var(--ease-cine);
-    display:inline-block;
-  }
-  .cta-btn:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(226,161,61,.25);}
-
-  /* ---------- realizations gallery ---------- */
-  #realizations{padding:18vh 5vw;min-height:100vh;}
-  .real-head{max-width:640px;margin-bottom:8vh;}
-  .real-head h2{font-size:clamp(30px,4vw,50px);margin-top:16px;}
-  .real-head h2 em{font-style:normal;color:var(--amber);}
-  .real-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .real-slot{
-    aspect-ratio:4/3;border-radius:14px;border:1px dashed var(--line);
-    background:rgba(242,240,234,.03);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-    color:var(--paper-dim);text-align:center;padding:20px;
-  }
-  .real-slot svg{opacity:.35;}
-  .real-slot span{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;}
-  @media (max-width:900px){.real-grid{grid-template-columns:repeat(2,1fr);}}
-  @media (max-width:560px){.real-grid{grid-template-columns:1fr;}}
-
-  /* ---------- team ---------- */
-  #team{padding:0 5vw 18vh;}
-  .team-card{
-    display:flex;align-items:center;gap:40px;padding:44px 40px;flex-wrap:wrap;
-  }
-  .team-avatars{display:flex;flex-shrink:0;}
-  .team-avatar{
-    width:78px;height:78px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Space Grotesk';font-weight:700;font-size:20px;color:#14110a;
-    border:3px solid var(--bg-soft);
-  }
-  .team-avatar:nth-child(1){background:var(--amber);z-index:2;}
-  .team-avatar:nth-child(2){background:var(--stone);margin-left:-22px;}
-  .team-card h3{font-size:clamp(20px,2.4vw,28px);margin-bottom:10px;}
-  .team-card p{font-size:14.5px;line-height:1.65;color:var(--paper-dim);max-width:560px;}
-
-  /* ---------- contact ---------- */
-  #contact{padding:4vh 5vw 18vh;}
-  .contact-card{
-    display:flex;align-items:center;gap:48px;padding:44px 40px;flex-wrap:wrap;
-  }
-  .contact-col{display:flex;flex-direction:column;gap:6px;}
-  .contact-col h4{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--paper-dim);margin-bottom:2px;text-transform:uppercase;}
-  .contact-col a,.contact-col p{font-size:18px;color:var(--paper);transition:color .3s;}
-  .contact-col a:hover{color:var(--amber);}
-  .contact-card .cta-btn{margin-left:auto;}
-  @media (max-width:860px){
-    .contact-card{gap:28px;padding:32px 26px;}
-    .contact-col a,.contact-col p{font-size:15px;}
-    .contact-card .cta-btn{margin-left:0;}
-  }
-
-  /* ---------- footer ---------- */
-  footer{
-    position:relative;z-index:5;background:var(--bg-soft);border-top:1px solid var(--line);
-    padding:8vh 5vw 4vh;
-  }
-  .foot-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:40px;}
-  .foot-col h4{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--paper-dim);margin-bottom:16px;text-transform:uppercase;}
-  .foot-col a,.foot-col p{display:block;font-size:14px;color:var(--paper-dim);margin-bottom:8px;}
-  .foot-col a:hover{color:var(--amber);}
-  .foot-bottom{margin-top:8vh;padding-top:3vh;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--paper-dim);font-size:12px;flex-wrap:wrap;gap:10px;}
-
-  @media (prefers-reduced-motion: reduce){
-    * { animation-duration:.001ms !important; transition-duration:.2s !important; }
-    html{scroll-behavior:auto;}
-  }
+@media (max-width: 768px) {
+  .stext .inner { margin-left: 20px; margin-right: 20px; max-width: none; }
+  #stat-bar { gap: 18px; flex-wrap: wrap; }
+  .ggrid { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stext, .stext.visible { transition: opacity .4s ease; filter: none; transform: none; }
+  #s-hero .scroll-hint .ln i { animation: none; }
+}
 </style>
 </head>
 <body>
 
-<div id="preloader">
-  <div class="pl-mark">MODERNFAS</div>
-  <div class="pl-bar"><span id="pl-fill"></span></div>
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="grain"></div>
+<div id="vignette"></div>
+<canvas id="particles"></canvas>
+
+<div id="loader">
+  <div class="line"></div>
+  <div class="brand">Modernfas</div>
+  <div class="sub">Ocieplenia elewacji</div>
+  <div class="bar"><i id="loader-fill"></i></div>
+  <div class="pct" id="loader-pct">0%</div>
+  <div class="line bottom"></div>
 </div>
 
-<canvas id="scene-canvas"></canvas>
+<div id="film-layer" aria-hidden="true">
+  <video id="film" src="film.mp4" muted playsinline preload="metadata"></video>
+</div>
 
-<header>
-  <div class="logo">MODERN<span>FAS</span></div>
-  <div class="nav-links">
-    <nav><ul>
-      <li><a href="#process">Proces</a></li>
-      <li><a href="#specs">Specyfikacja</a></li>
-      <li><a href="#realizations">Realizacje</a></li>
-      <li><a href="#contact">Kontakt</a></li>
-    </ul></nav>
-    <a href="#contact" class="nav-cta">Bezpłatna wycena</a>
+<button id="play-btn" aria-label="Odtwórz film" title="Odtwórz film">
+  <span class="disc">
+    <svg class="ic-play" viewBox="0 0 16 16" aria-hidden="true"><polygon points="3,1.5 14.5,8 3,14.5"/></svg>
+    <svg class="ic-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="1.5" width="4" height="13"/><rect x="9.5" y="1.5" width="4" height="13"/></svg>
+  </span>
+  <span class="plabel">Odtwórz animację</span>
+</button>
+
+<nav id="chapters" aria-label="Rozdziały">
+  <div class="dot" data-idx="0"><span class="lbl">Start</span></div>
+  <div class="link"><i></i></div>
+  <div class="dot" data-idx="1"><span class="lbl">Filozofia</span></div>
+  <div class="link"><i></i></div>
+  <div class="dot" data-idx="2"><span class="lbl">Fundament systemu</span></div>
+  <div class="link"><i></i></div>
+  <div class="dot" data-idx="3"><span class="lbl">Wykończenie</span></div>
+  <div class="link"><i></i></div>
+  <div class="dot" data-idx="4"><span class="lbl">Dlaczego grafit</span></div>
+  <div class="link"><i></i></div>
+  <div class="dot" data-idx="5"><span class="lbl">Kontakt</span></div>
+</nav>
+
+<section id="anim">
+  <div id="canvas-wrap">
+    <canvas id="frame-canvas"></canvas>
+    <div class="ov" id="ov-left"></div>
+    <div class="ov" id="ov-bottom"></div>
+    <div class="ov" id="ov-tint"></div>
   </div>
-</header>
 
-<div class="content">
+  <!-- 1 · HERO -->
+  <div class="stext" id="s-hero" data-show-at="0" data-hide-at="0.13">
+    <div class="inner">
+      <div class="overline">Elewacje, które oddychają ciepłem · od 2011</div>
+      <h1 class="title" data-split>MODERNFAS</h1>
+      <p class="tagline">Przewiń, aby zobaczyć, jak surowe ściany ubierają się w kolejne warstwy ocieplenia — aż po gotową elewację.</p>
+      <div class="scroll-hint"><span class="ln"><i></i></span> Przewiń w dół</div>
+    </div>
+    <div id="stat-bar">
+      <div class="stat"><div class="num"><span data-target="15">0</span></div><div class="cap">lat doświadczenia</div></div>
+      <div class="stat"><div class="num"><span data-target="60">0</span><em>%</em></div><div class="cap">mniejsze straty ciepła</div></div>
+      <div class="stat"><div class="num">λ <span data-target="0.031" data-decimals="3">0</span></div><div class="cap">styropian grafitowy</div></div>
+      <div class="stat"><div class="num"><span data-target="10">0</span></div><div class="cap">lat gwarancji</div></div>
+    </div>
+  </div>
 
-  <!-- HERO -->
-  <section id="hero">
-    <div class="hero-inner">
-      <div class="eyebrow">System ociepleń ETICS · od 2011</div>
-      <h1>Każda ściana<br>ma swoją historię <em>ciepła</em>.</h1>
-      <p class="hero-sub">Pokazujemy elewację tak, jak zwykle jej nie widać — warstwa po warstwie, od gołego muru po gotowy kolor. Przewiń, żeby zobaczyć cały proces w 3D.</p>
+  <!-- 2 · VISION -->
+  <div class="stext" id="s-vision" data-show-at="0.17" data-hide-at="0.30">
+    <div class="inner">
+      <div class="qmark">„</div>
+      <div class="quote">Elewacja to nie dekoracja. To osiem warstw, które przez dekady pracują na ciepło Twojego domu — od listwy startowej po ostatni parapet.</div>
+      <div class="div"></div>
+      <div class="attr">Jakub i Damian · Modernfas</div>
     </div>
-    <div class="scroll-cue"><div class="line"><span></span></div>PRZEWIŃ</div>
-  </section>
+  </div>
 
-  <!-- PROCESS -->
-  <section id="process">
-    <div class="process-pin">
-      <div class="rail" id="rail"></div>
-      <div id="stage-cards"></div>
-      <button id="playBtn" class="play-btn" type="button" aria-label="Odtwórz proces automatycznie">
-        <span class="play-btn-icon">▶</span>
-        <span class="play-btn-label">Odtwórz proces</span>
-      </button>
+  <!-- 3 · DETAILS -->
+  <div class="stext" id="s-details" data-show-at="0.34" data-hide-at="0.47">
+    <div class="inner">
+      <div class="overline">Etapy 1–4 · Fundament systemu</div>
+      <h2 class="stitle">Zanim pojawi się kolor, <i>decyduje precyzja</i></h2>
+      <p class="sbody">Na ekranie surowe ściany właśnie pokrywają się grafitem. Każda warstwa ma swoje zadanie.</p>
+      <div class="flist">
+        <div class="item"><span class="no">01</span><div><div class="fname">Listwa startowa i naroża</div><div class="fdesc">Wypoziomowany pierwszy rząd płyt i ochrona każdej krawędzi budynku.</div></div></div>
+        <div class="item"><span class="no">02</span><div><div class="fname">Grafitowy styropian klejony</div><div class="fdesc">Płyty λ 0,031 W/mK klejone metodą obwodowo-punktową, w cegiełkę.</div></div></div>
+        <div class="item"><span class="no">03</span><div><div class="fname">Kołkowanie mechaniczne</div><div class="fdesc">Łączniki dobrane do podłoża — płyty trzymają się ściany, nie kleju.</div></div></div>
+        <div class="item"><span class="no">04</span><div><div class="fname">Warstwa zbrojąca z siatką</div><div class="fdesc">Siatka z włókna szklanego zatopiona w kleju — pancerz całej elewacji.</div></div></div>
+      </div>
     </div>
-  </section>
+  </div>
 
-  <!-- SPECS -->
-  <section id="specs">
-    <div class="specs-head">
-      <div class="eyebrow">Dane techniczne</div>
-      <h2>Liczby, które<br>stoją za efektem.</h2>
+  <!-- 4 · GRID -->
+  <div class="stext" id="s-grid" data-show-at="0.51" data-hide-at="0.64">
+    <div class="inner">
+      <div class="overline">Etapy 5–8 · Wykończenie</div>
+      <h2 class="stitle">Warstwy, <i>które widać</i></h2>
+      <div class="ggrid">
+        <div class="gcell"><div class="ico">◈</div><div class="gname">Grunt pod tynk</div><div class="gdesc">Wyrównuje chłonność i trwale wiąże warstwę zbrojącą z tynkiem.</div></div>
+        <div class="gcell"><div class="ico">◉</div><div class="gname">Tynk elewacyjny i kolor</div><div class="gdesc">Struktura i barwa dobrane do projektu — twarz Twojego domu.</div></div>
+        <div class="gcell"><div class="ico">▤</div><div class="gname">Parapety zewnętrzne</div><div class="gdesc">Obróbki z kapinosem, szczelne obsadzenie — zero zacieków.</div></div>
+        <div class="gcell"><div class="ico">▦</div><div class="gname">Podbitka dachowa</div><div class="gdesc">Estetyczne zamknięcie okapu, wentylacja połaci zachowana.</div></div>
+        <div class="gcell"><div class="ico">▮</div><div class="gname">Rury spustowe</div><div class="gdesc">Kompletne orynnowanie wraca na miejsce jako finał montażu.</div></div>
+        <div class="gcell"><div class="ico">✓</div><div class="gname">Odbiór etapowy</div><div class="gdesc">Każda warstwa dokumentowana zdjęciami przed zakryciem.</div></div>
+      </div>
     </div>
-    <div class="specs-grid">
-      <div class="spec"><div class="num">18cm</div><div class="lbl">Typowa grubość izolacji EPS dobierana pod audyt energetyczny budynku</div></div>
-      <div class="spec"><div class="num">‑60%</div><div class="lbl">Redukcja strat ciepła przez przegrody zewnętrzne po dociepleniu*</div></div>
-      <div class="spec"><div class="num">10 lat</div><div class="lbl">Gwarancja na system ETICS i robociznę wykonaną przez naszych ekip</div></div>
-      <div class="spec"><div class="num">0,031</div><div class="lbl">Współczynnik λ [W/mK] grafitowego styropianu fasadowego EPS</div></div>
-    </div>
-    <p style="margin-top:22px;font-size:11px;color:var(--paper-dim);">*wartość szacunkowa, zależna od stanu wyjściowego przegrody i grubości izolacji</p>
-  </section>
+  </div>
 
-  <!-- REALIZATIONS -->
-  <section id="realizations">
-    <div class="real-head">
-      <div class="eyebrow">Nasze realizacje</div>
-      <h2>Zrealizowane<br>elewacje.</h2>
-    </div>
-    <div class="real-grid">
-      <div class="real-slot">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>
-        <span>Zdjęcie wkrótce</span>
-      </div>
-      <div class="real-slot">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>
-        <span>Zdjęcie wkrótce</span>
-      </div>
-      <div class="real-slot">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>
-        <span>Zdjęcie wkrótce</span>
-      </div>
-      <div class="real-slot">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>
-        <span>Zdjęcie wkrótce</span>
-      </div>
-      <div class="real-slot">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>
-        <span>Zdjęcie wkrótce</span>
-      </div>
-      <div class="real-slot">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5.5-5.5L9 17"/></svg>
-        <span>Zdjęcie wkrótce</span>
+  <!-- 5 · CONTEXT -->
+  <div class="stext" id="s-context" data-show-at="0.68" data-hide-at="0.81">
+    <div class="inner">
+      <div class="overline">Technologia</div>
+      <h2 class="stitle">Dlaczego <i>grafit?</i></h2>
+      <p class="sbody">Styropian grafitowy izoluje ok. 20% lepiej niż biały. Ta sama ciepłochronność przy cieńszej warstwie — węższe ościeża, więcej światła w oknach.</p>
+      <div class="dlist">
+        <div class="row"><span class="k">λ 0,031 W/mK</span><span class="dots"></span><span class="v">przewodność cieplna</span></div>
+        <div class="row"><span class="k">18 cm</span><span class="dots"></span><span class="v">typowa grubość ocieplenia</span></div>
+        <div class="row"><span class="k">do 60%</span><span class="dots"></span><span class="v">mniejsze straty ciepła</span></div>
+        <div class="row"><span class="k">od 2011</span><span class="dots"></span><span class="v">realizacje w całej Polsce</span></div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- TEAM -->
-  <section id="team">
-    <div class="team-card glass">
-      <div class="team-avatars">
-        <div class="team-avatar">J</div>
-        <div class="team-avatar">D</div>
+  <!-- 6 · CTA -->
+  <div class="stext center" id="s-cta" data-show-at="0.87" data-hide-at="1.01">
+    <div class="inner">
+      <h2 class="stitle">Czas ubrać Twój dom <i>na ciepło</i></h2>
+      <p class="sub">Bezpłatny obmiar i wycena w 48 godzin. Dom na ekranie właśnie dostał nową elewację — Twój może wyglądać tak samo.</p>
+      <div class="btns">
+        <a class="btn primary" href="mailto:modernfas1@gmail.com">Umów bezpłatną wycenę</a>
+        <a class="btn ghost" href="#anim" id="btn-replay">Zobacz etapy ponownie</a>
+        <a class="btn ghost" href="#gallery" id="btn-realizacje">Zobacz nasze realizacje</a>
       </div>
-      <div>
-        <h3>Jakub i Damian</h3>
-        <p>Przeprowadzimy Cię przez cały proces, doradzimy, zaprojektujemy i pomożemy w wyborze materiałów — od pierwszego pomiaru aż po ostatnią warstwę tynku.</p>
+      <div class="card">
+        <div class="cname">MODERNFAS</div>
+        <div class="crole">Elewacje, które oddychają ciepłem · od 2011</div>
+        <div class="cdet">modernfas1@gmail.com<br>516 472 845 · 533 139 174<br>Jakub i Damian · Realizacje w całej Polsce</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="real-head">
-      <div class="eyebrow">Skontaktuj się z nami</div>
-      <h2>Porozmawiajmy<br><em>o Twojej elewacji</em>.</h2>
-    </div>
-    <div class="contact-card glass">
-      <div class="contact-col">
-        <h4>Telefon</h4>
-        <a href="tel:+48516472845">516 472 845</a>
-        <a href="tel:+48533139174">533 139 174</a>
-      </div>
-      <div class="contact-col">
-        <h4>E-mail</h4>
-        <a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a>
-      </div>
-      <div class="contact-col">
-        <h4>Zasięg</h4>
-        <p>Realizacje w całej Polsce</p>
-      </div>
-      <a href="mailto:modernfas1@gmail.com?subject=Bezp%C5%82atna%20wycena" class="cta-btn">Umów bezpłatną wycenę →</a>
-    </div>
-  </section>
-
-</div>
+<section id="gallery">
+  <div class="head">
+    <div class="overline">Realizacje</div>
+    <h2 class="stitle">Nasze <i>realizacje</i></h2>
+    <p class="sbody">Ocieplamy elewacje w całej Polsce od 2011 roku. Zdjęcia z naszych budów pojawią się tutaj już niebawem.</p>
+  </div>
+  <div class="grid">
+    <figure class="tall" data-parallax="-14"><div class="ph"><span class="ph-ico">✦</span><span class="ph-txt">Zdjęcie realizacji<br>wkrótce</span></div><figcaption>Realizacja · dom jednorodzinny</figcaption></figure>
+    <figure data-parallax="10"><div class="ph"><span class="ph-ico">✦</span><span class="ph-txt">Zdjęcie realizacji<br>wkrótce</span></div><figcaption>Realizacja · elewacja grafitowa</figcaption></figure>
+    <figure data-parallax="-8"><div class="ph"><span class="ph-ico">✦</span><span class="ph-txt">Zdjęcie realizacji<br>wkrótce</span></div><figcaption>Realizacja · system ETICS</figcaption></figure>
+    <figure data-parallax="12"><div class="ph"><span class="ph-ico">✦</span><span class="ph-txt">Zdjęcie realizacji<br>wkrótce</span></div><figcaption>Realizacja · termomodernizacja</figcaption></figure>
+    <figure class="tall" data-parallax="-10"><div class="ph"><span class="ph-ico">✦</span><span class="ph-txt">Zdjęcie realizacji<br>wkrótce</span></div><figcaption>Realizacja · dom parterowy</figcaption></figure>
+    <figure data-parallax="8"><div class="ph"><span class="ph-ico">✦</span><span class="ph-txt">Zdjęcie realizacji<br>wkrótce</span></div><figcaption>Realizacja · nowy kolor elewacji</figcaption></figure>
+    <figure data-parallax="-12"><div class="ph"><span class="ph-ico">✦</span><span class="ph-txt">Zdjęcie realizacji<br>wkrótce</span></div><figcaption>Realizacja · finał o zmierzchu</figcaption></figure>
+  </div>
+</section>
 
 <footer>
-  <div class="foot-grid">
-    <div class="foot-col">
-      <h4>Modernfas</h4>
-      <p style="color:var(--paper);font-family:'Space Grotesk';font-size:16px;">Elewacje i systemy ociepleń</p>
-      <p>Realizacje w całej Polsce</p>
-    </div>
-    <div class="foot-col">
-      <h4>Kontakt</h4>
-      <a href="tel:+48516472845">516 472 845</a>
-      <a href="tel:+48533139174">533 139 174</a>
-      <a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a>
-    </div>
-    <div class="foot-col">
-      <h4>Nawigacja</h4>
-      <a href="#process">Proces montażu</a>
-      <a href="#specs">Specyfikacja</a>
-    </div>
-  </div>
-  <div class="foot-bottom">
-    <span>© 2026 Modernfas. Wszystkie prawa zastrzeżone.</span>
-    <span>Wizualizacje 3D poglądowe — nie stanowią projektu wykonawczego.</span>
-  </div>
+  <div class="fbrand">Modernfas</div>
+  <div class="flegal">© 2026 Modernfas · Elewacje, które oddychają ciepłem · Systemy ociepleń ETICS od 2011 · modernfas1@gmail.com · 516 472 845 · 533 139 174</div>
 </footer>
 
 <script>
-gsap.registerPlugin(ScrollTrigger);
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function () {
+  'use strict';
 
-/* =========================================================
-   TEXTURE FACTORY — procedural canvases for every ETICS stage
-   ========================================================= */
-function baseCanvas(w=512,h=512){
-  const c=document.createElement('canvas'); c.width=w; c.height=h;
-  return {c, ctx:c.getContext('2d')};
-}
-function noise(ctx,w,h,amount,alpha){
-  const id=ctx.getImageData(0,0,w,h); const d=id.data;
-  for(let i=0;i<d.length;i+=4){
-    const n=(Math.random()-0.5)*amount;
-    d[i]+=n; d[i+1]+=n; d[i+2]+=n;
+  var FRAME_COUNT = 144;
+  var LERP_FACTOR = 0.09;
+  var DWELL_CENTERS = [0.065, 0.235, 0.405, 0.575, 0.745, 0.93];
+  var DWELL_WIDTH = 0.045;
+  var DWELL_PEAK = 3.5;
+  var REMAP_N = 2000;
+  var isMobile = window.matchMedia('(max-width: 768px)').matches;
+  var FRAME_DIR = isMobile ? 'frames/mobile/' : 'frames/desktop/';
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var section = document.getElementById('anim');
+  var canvas = document.getElementById('frame-canvas');
+  var ctx = canvas.getContext('2d');
+  var loader = document.getElementById('loader');
+  var loaderFill = document.getElementById('loader-fill');
+  var loaderPct = document.getElementById('loader-pct');
+  var chapters = document.getElementById('chapters');
+  var tint = document.getElementById('ov-tint');
+  var texts = Array.prototype.slice.call(document.querySelectorAll('.stext'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('#chapters .dot'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('#chapters .link i'));
+
+  /* ---------- Custom cursor ---------- */
+  var cdot = document.getElementById('cursor-dot');
+  var cring = document.getElementById('cursor-ring');
+  var mx = -100, my = -100, rx = -100, ry = -100;
+  document.addEventListener('mousemove', function (e) {
+    mx = e.clientX; my = e.clientY;
+    cdot.style.left = mx + 'px'; cdot.style.top = my + 'px';
+  });
+  document.addEventListener('mouseover', function (e) {
+    if (e.target.closest('a, .btn, .dot, .gcell, figure, #play-btn')) cring.classList.add('hover');
+    else cring.classList.remove('hover');
+  });
+
+  /* ---------- Particles ---------- */
+  var pc = document.getElementById('particles');
+  var pctx = pc.getContext('2d');
+  var particles = [];
+  function sizeParticles() { pc.width = window.innerWidth; pc.height = window.innerHeight; }
+  sizeParticles();
+  for (var i = 0; i < 40; i++) {
+    particles.push({
+      x: Math.random() * pc.width, y: Math.random() * pc.height,
+      r: 0.3 + Math.random() * 1.5,
+      vx: (Math.random() - 0.5) * 0.16, vy: (Math.random() - 0.5) * 0.12,
+      a: 0.05 + Math.random() * 0.3
+    });
   }
-  ctx.putImageData(id,0,0);
-}
-
-function texBlock(){ // 00/01 raw aerated-concrete blocks
-  const {c,ctx}=baseCanvas();
-  ctx.fillStyle='#d7d3c8'; ctx.fillRect(0,0,512,512);
-  ctx.strokeStyle='rgba(120,115,100,0.55)'; ctx.lineWidth=3;
-  const rows=8, cols=4;
-  for(let r=0;r<rows;r++){
-    const y=r*(512/rows);
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(512,y); ctx.stroke();
-    const offset = (r%2===0)?0:(512/cols)/2;
-    for(let cIdx=-1;cIdx<=cols;cIdx++){
-      const x=cIdx*(512/cols)+offset;
-      ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x,y+512/rows); ctx.stroke();
+  function drawParticles() {
+    pctx.clearRect(0, 0, pc.width, pc.height);
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = pc.width; if (p.x > pc.width) p.x = 0;
+      if (p.y < 0) p.y = pc.height; if (p.y > pc.height) p.y = 0;
+      pctx.beginPath();
+      pctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      pctx.fillStyle = 'rgba(244, 240, 234, ' + p.a + ')';
+      pctx.fill();
     }
   }
-  noise(ctx,512,512,10);
-  return c;
-}
-function texFoam(dowels){ // 02/03 graphite EPS styrofoam boards
-  const {c,ctx}=baseCanvas();
-  ctx.fillStyle='#3a3b3e'; ctx.fillRect(0,0,512,512);
-  // subtle graphite speckle, characteristic of grey EPS boards
-  for(let i=0;i<2200;i++){
-    const v = 40+Math.random()*30;
-    ctx.fillStyle = `rgba(${v},${v},${v+4},${0.4+Math.random()*0.4})`;
-    ctx.fillRect(Math.random()*512, Math.random()*512, 1.4, 1.4);
-  }
-  ctx.strokeStyle='rgba(20,20,22,0.6)'; ctx.lineWidth=2.5;
-  const bw=512/3, bh=512/4;
-  for(let r=0;r<4;r++){
-    for(let cIdx=-1;cIdx<=3;cIdx++){
-      const offset=(r%2===0)?0:bw/2;
-      const x=cIdx*bw+offset, y=r*bh;
-      ctx.strokeRect(x,y,bw,bh);
+
+  /* ---------- Letter split ---------- */
+  document.querySelectorAll('[data-split]').forEach(function (el) {
+    var chars = el.textContent.split('');
+    el.textContent = '';
+    chars.forEach(function (ch, i) {
+      var s = document.createElement('span');
+      s.className = 'ch';
+      s.textContent = ch;
+      s.style.transitionDelay = (i * 60) + 'ms';
+      el.appendChild(s);
+    });
+  });
+
+  /* ---------- Dwell remap engine ---------- */
+  /* density d(x) peaks at dwell centers; effective progress integrates 1/d,
+     so frames advance slowly where content dwells and quickly between. */
+  var remapLUT = new Float32Array(REMAP_N + 1);
+  (function buildLUT() {
+    var acc = 0;
+    var prev = 0;
+    for (var i = 0; i <= REMAP_N; i++) {
+      var x = i / REMAP_N;
+      var d = 1;
+      for (var c = 0; c < DWELL_CENTERS.length; c++) {
+        var dx = x - DWELL_CENTERS[c];
+        d += DWELL_PEAK * Math.exp(-(dx * dx) / (2 * DWELL_WIDTH * DWELL_WIDTH));
+      }
+      var v = 1 / d;
+      if (i > 0) acc += (v + prev) / 2 / REMAP_N;
+      prev = v;
+      remapLUT[i] = acc;
     }
+    var total = remapLUT[REMAP_N];
+    for (var j = 0; j <= REMAP_N; j++) remapLUT[j] /= total;
+  })();
+  function remapProgress(x) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    var f = x * REMAP_N;
+    var i = Math.floor(f);
+    return remapLUT[i] + (remapLUT[Math.min(i + 1, REMAP_N)] - remapLUT[i]) * (f - i);
   }
-  noise(ctx,512,512,6);
-  if(dowels){
-    ctx.fillStyle='rgba(210,208,200,0.95)';
-    for(let r=0;r<4;r++)for(let cIdx=0;cIdx<3;cIdx++){
-      const offset=(r%2===0)?0:bw/2;
-      const cx=cIdx*bw+offset+bw/2, cy=r*bh+bh/2;
-      [[-bw*0.28,-bh*0.28],[bw*0.28,-bh*0.28],[-bw*0.28,bh*0.28],[bw*0.28,bh*0.28],[0,0]].forEach(([dx,dy])=>{
-        ctx.beginPath(); ctx.arc(cx+dx,cy+dy,6,0,Math.PI*2); ctx.fill();
-        ctx.strokeStyle='rgba(15,15,16,0.7)'; ctx.lineWidth=1; ctx.stroke();
+
+  /* ---------- Frame loading ---------- */
+  var frames = new Array(FRAME_COUNT);
+  var loadedCount = 0;
+  var firstFrameShown = false;
+
+  function framePath(i) {
+    var n = String(i + 1);
+    while (n.length < 4) n = '0' + n;
+    return FRAME_DIR + 'frame-' + n + '.webp';
+  }
+  function onFrameLoaded() {
+    loadedCount++;
+    var pct = Math.round(loadedCount / FRAME_COUNT * 100);
+    loaderFill.style.width = pct + '%';
+    loaderPct.textContent = pct + '%';
+    if (!firstFrameShown && frames[0]) {
+      firstFrameShown = true;
+      drawFrame(0);
+    }
+    if (loadedCount >= FRAME_COUNT) start();
+  }
+  function loadFrame(i) {
+    var img = new Image();
+    img.decoding = 'async';
+    img.onload = function () { frames[i] = img; onFrameLoaded(); };
+    img.onerror = function () { onFrameLoaded(); };
+    img.src = framePath(i);
+  }
+  // Critical frames first (every 6th), then the rest in batches
+  var order = [];
+  for (var ci = 0; ci < FRAME_COUNT; ci += 6) order.push(ci);
+  for (var ri = 0; ri < FRAME_COUNT; ri++) if (ri % 6 !== 0) order.push(ri);
+  var cursor = 0;
+  function loadBatch() {
+    var end = Math.min(cursor + 12, order.length);
+    for (; cursor < end; cursor++) loadFrame(order[cursor]);
+    if (cursor < order.length) setTimeout(loadBatch, 40);
+  }
+  loadBatch();
+
+  /* ---------- Canvas draw ---------- */
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  function sizeCanvas() {
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+  }
+  sizeCanvas();
+  function nearestFrame(i) {
+    if (frames[i]) return frames[i];
+    for (var d = 1; d < FRAME_COUNT; d++) {
+      if (frames[i - d]) return frames[i - d];
+      if (frames[i + d]) return frames[i + d];
+    }
+    return null;
+  }
+  var lastDrawn = -1;
+  function drawFrame(i) {
+    var img = nearestFrame(i);
+    if (!img) return;
+    var cw = canvas.width, chh = canvas.height;
+    var iw = img.naturalWidth, ih = img.naturalHeight;
+    var scale = Math.max(cw / iw, chh / ih);
+    var dw = iw * scale, dh = ih * scale;
+    ctx.drawImage(img, (cw - dw) / 2, (chh - dh) / 2, dw, dh);
+    lastDrawn = i;
+  }
+
+  /* ---------- Scroll progress ---------- */
+  function getScrollProgress() {
+    var rect = section.getBoundingClientRect();
+    var total = rect.height - window.innerHeight;
+    if (total <= 0) return 0;
+    return Math.max(0, Math.min(1, -rect.top / total));
+  }
+
+  /* ---------- Section text visibility + chapters + tint ---------- */
+  var sectionMeta = texts.map(function (el) {
+    return { el: el, show: parseFloat(el.getAttribute('data-show-at')), hide: parseFloat(el.getAttribute('data-hide-at')) };
+  });
+  var statsAnimated = false;
+  function updateOverlays(raw) {
+    var active = -1;
+    for (var i = 0; i < sectionMeta.length; i++) {
+      var m = sectionMeta[i];
+      var vis = raw >= m.show && raw < m.hide;
+      m.el.classList.toggle('visible', vis);
+      if (vis) active = i;
+    }
+    if (active === 0 && !statsAnimated) { statsAnimated = true; animateStats(); }
+    dots.forEach(function (d, i) { d.classList.toggle('active', i === active); });
+    links.forEach(function (l, i) {
+      var a = sectionMeta[i].show, b = sectionMeta[i + 1] ? sectionMeta[i + 1].show : 1;
+      var f = Math.max(0, Math.min(1, (raw - a) / (b - a)));
+      l.style.height = (f * 100) + '%';
+    });
+    if (active >= 0) {
+      var hues = ['135deg', '160deg', '200deg', '230deg', '160deg', '135deg'];
+      tint.style.background = 'linear-gradient(' + hues[active] + ', var(--accent), var(--graphite-blue))';
+      tint.style.opacity = active === 5 ? '0.04' : '0.06';
+    }
+    var inAnim = section.getBoundingClientRect().bottom > window.innerHeight * 0.5 && section.getBoundingClientRect().top < 0.5 * window.innerHeight;
+    chapters.classList.toggle('on', getScrollProgress() > 0.005 && inAnim);
+  }
+
+  /* ---------- Stat counters ---------- */
+  function animateStats() {
+    document.querySelectorAll('#stat-bar [data-target]').forEach(function (el) {
+      var target = parseFloat(el.getAttribute('data-target'));
+      var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+      var t0 = null;
+      var DUR = 1500;
+      function tick(ts) {
+        if (!t0) t0 = ts;
+        var t = Math.min(1, (ts - t0) / DUR);
+        var e = 1 - Math.pow(1 - t, 3);
+        el.textContent = (target * e).toFixed(decimals).replace('.', ',');
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  /* ---------- Main loop ---------- */
+  var currentFrame = 0;
+  function loop() {
+    var raw = getScrollProgress();
+    var remapped = reducedMotion ? raw : remapProgress(raw);
+    var target = remapped * (FRAME_COUNT - 1);
+    currentFrame += (target - currentFrame) * (reducedMotion ? 1 : LERP_FACTOR);
+    if (Math.abs(currentFrame - target) < 0.02) currentFrame = target;
+    var fi = Math.round(currentFrame);
+    if (fi !== lastDrawn) drawFrame(fi);
+    updateOverlays(raw);
+    drawParticles();
+    // cursor ring lerp
+    rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+    cring.style.left = rx + 'px'; cring.style.top = ry + 'px';
+    requestAnimationFrame(loop);
+  }
+
+  function start() {
+    setTimeout(function () {
+      loader.classList.add('done');
+      if (reducedMotion) {
+        drawFrame(0);
+        updateOverlays(getScrollProgress());
+        window.addEventListener('scroll', function () {
+          var raw = getScrollProgress();
+          drawFrame(Math.round(raw * (FRAME_COUNT - 1)));
+          updateOverlays(raw);
+        }, { passive: true });
+      } else {
+        requestAnimationFrame(loop);
+      }
+    }, 350);
+  }
+
+  /* ---------- Chapter dot navigation ---------- */
+  dots.forEach(function (d, i) {
+    d.addEventListener('click', function () {
+      var m = sectionMeta[i];
+      var mid = (m.show + Math.min(m.hide, 1)) / 2;
+      var top = section.offsetTop + mid * (section.offsetHeight - window.innerHeight);
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    });
+  });
+  var replay = document.getElementById('btn-replay');
+  if (replay) replay.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  var realizacje = document.getElementById('btn-realizacje');
+  if (realizacje) realizacje.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  /* ---------- Film playback (play button) ---------- */
+  /* The button plays the original 15 s MP4 in a fullscreen layer — real 24 fps,
+     perfectly smooth. On end (or stop) the page scroll is synced to the matching
+     point of the canvas animation, so the handoff is seamless. */
+  var playBtn = document.getElementById('play-btn');
+  var filmLayer = document.getElementById('film-layer');
+  var film = document.getElementById('film');
+  var playing = false;
+
+  function animEnd() { return section.offsetTop + section.offsetHeight - window.innerHeight; }
+
+  // inverse of remapProgress: find raw scroll x whose remapped progress equals p
+  function invRemap(p) {
+    if (reducedMotion) return p;
+    var lo = 0, hi = REMAP_N;
+    while (lo < hi) {
+      var mid = (lo + hi) >> 1;
+      if (remapLUT[mid] < p) lo = mid + 1; else hi = mid;
+    }
+    return lo / REMAP_N;
+  }
+  function syncScrollToFilm() {
+    var p = film.duration ? Math.min(1, film.currentTime / film.duration) : 0;
+    var y = invRemap(p) * animEnd();
+    window.scrollTo(0, y);
+    currentFrame = p * (FRAME_COUNT - 1); // no LERP catch-up jump after the film
+    drawFrame(Math.round(currentFrame));
+  }
+  function stopFilm(sync) {
+    if (!playing) return;
+    playing = false;
+    film.pause();
+    if (sync) syncScrollToFilm();
+    filmLayer.classList.remove('on');
+    playBtn.classList.remove('playing');
+  }
+  playBtn.addEventListener('click', function () {
+    if (playing) { stopFilm(true); return; }
+    playBtn.classList.add('used');
+    playing = true;
+    playBtn.classList.add('playing');
+    filmLayer.classList.add('on');
+    film.currentTime = 0;
+    film.play();
+  });
+  film.addEventListener('ended', function () { stopFilm(true); });
+  // scrolling / touching hands control back to the user
+  ['wheel', 'touchstart', 'keydown'].forEach(function (ev) {
+    window.addEventListener(ev, function () { stopFilm(false); }, { passive: true });
+  });
+
+  /* ---------- Gallery reveal + parallax ---------- */
+  var figs = Array.prototype.slice.call(document.querySelectorAll('#gallery figure'));
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('reveal'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.15 });
+  figs.forEach(function (f) { io.observe(f); });
+  if (!reducedMotion) {
+    window.addEventListener('scroll', function () {
+      var vh = window.innerHeight;
+      figs.forEach(function (f) {
+        var r = f.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) return;
+        var p = (r.top + r.height / 2 - vh / 2) / vh;
+        var amt = parseFloat(f.getAttribute('data-parallax') || '0');
+        var target = f.querySelector('img, .ph');
+        if (target) target.style.transform = 'translateY(' + (p * amt) + 'px)';
       });
-    }
-  }
-  return c;
-}
-function texMesh(){ // 04 reinforcing mesh + base coat
-  const {c,ctx}=baseCanvas();
-  ctx.fillStyle='#c3beb2'; ctx.fillRect(0,0,512,512);
-  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1;
-  for(let i=-512;i<512*2;i+=14){
-    ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i+512,512); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(i,512); ctx.lineTo(i+512,0); ctx.stroke();
-  }
-  ctx.globalAlpha=0.5;
-  for(let i=0;i<160;i++){
-    ctx.fillStyle=`rgba(150,146,136,${Math.random()*0.4})`;
-    ctx.beginPath();
-    ctx.ellipse(Math.random()*512,Math.random()*512, 18+Math.random()*30, 8+Math.random()*14, Math.random()*Math.PI,0,Math.PI*2);
-    ctx.fill();
-  }
-  ctx.globalAlpha=1;
-  noise(ctx,512,512,8);
-  return c;
-}
-function texPrimer(){ // 05 primer
-  const {c,ctx}=baseCanvas();
-  ctx.fillStyle='#dcd5c4'; ctx.fillRect(0,0,512,512);
-  noise(ctx,512,512,5);
-  return c;
-}
-function texFinal(color, accent){ // 06/07 finish render + colour
-  const {c,ctx}=baseCanvas();
-  ctx.fillStyle=color; ctx.fillRect(0,0,512,512);
-  const grad=ctx.createLinearGradient(0,0,0,512);
-  grad.addColorStop(0,'rgba(255,255,255,0.06)'); grad.addColorStop(1,'rgba(0,0,0,0.06)');
-  ctx.fillStyle=grad; ctx.fillRect(0,0,512,512);
-  noise(ctx,512,512,6);
-  return c;
-}
-
-// rank mask: a grayscale canvas where each cell's brightness encodes "how
-// late" that patch is applied — bright (near white) = applied last, dark
-// (near black) = applied first. Combined with alphaTest this reveals a
-// stage's texture course-by-course / board-by-board as you scroll, instead
-// of the whole surface popping in at once. Bottom of the wall (canvas
-// bottom) is installed first, matching how a real crew works upward.
-function makeRankMask(rows, jitter, cols=8){
-  const {c,ctx}=baseCanvas();
-  const rh = 512/rows, cw = 512/cols;
-  for(let r=0;r<rows;r++){
-    for(let cIdx=0;cIdx<cols;cIdx++){
-      const rowFromBottom = (rows-1-r) / Math.max(1, rows-1); // 0 = bottom row, 1 = top row
-      let rank = rowFromBottom + (Math.random()-0.5)*jitter;
-      rank = Math.max(0, Math.min(1, rank));
-      const v = Math.round((1-rank)*255); // store as alpha: bottom (rank~0) -> ~white/opaque early, top (rank~1) -> ~black/hidden until late
-      ctx.fillStyle = `rgb(${v},${v},${v})`;
-      ctx.fillRect(cIdx*cw, r*rh, cw+1, rh+1);
-    }
-  }
-  return c;
-}
-
-const stageDefs = [
-  {label:'01', title:'Inwentaryzacja i przygotowanie podłoża',
-   text:'Ocena stanu elewacji, oczyszczenie muru z kurzu i tłuszczów, gruntowanie podłoża pod klej — fundament pod cały system ociepleniowy.',
-   chips:['Diagnostyka ścian','Grunt głęboko penetrujący'],
-   tex:()=>texBlock(), ground:'#c9b389', sky:'#9aa4ab',
-   cam:{p:[9.6,3.4,9.2], l:[0,1.6,0]}},
-  {label:'02', title:'Rozstawienie rusztowania',
-   text:'Montaż systemowego rusztowania ramowego wzdłuż całej elewacji — pomosty robocze co kondygnację zapewniają bezpieczne zaplecze dla wszystkich kolejnych etapów.',
-   chips:['Rusztowanie ramowe','Pomosty robocze','Siatka ochronna'],
-   tex:()=>texBlock(), ground:'#c9b389', sky:'#9aa4ab',
-   cam:{p:[8.2,2.6,10.6], l:[0,1.8,0.6]}, scaffold:'rise', sameTex:true},
-  {label:'03', title:'Listwa startowa i naroża',
-   text:'Montaż listwy cokołowej wyznaczającej dolną krawędź izolacji oraz zabezpieczenie naroży kątownikami — precyzja tu decyduje o równości całej fasady.',
-   chips:['Listwa cokołowa','Kątowniki narożne'],
-   tex:()=>texBlock(), ground:'#c9b389', sky:'#9aa4ab',
-   cam:{p:[7.6,1.9,7.8], l:[-0.8,0.6,0.4]}, scaffold:'up', sameTex:true},
-  {label:'04', title:'Klejenie płyt styropianowych',
-   text:'Płyty EPS klejone metodą pasmowo-punktową, mijankowo jak cegły, z dylatacją przy stolarce okiennej i drzwiowej.',
-   chips:['Styropian grafitowy EPS λ 0,031','Klej pasmowo-punktowy'],
-   tex:()=>texFoam(false), ground:'#c3ac82', sky:'#a2acb2',
-   cam:{p:[6.1,2.3,6.6], l:[0,1.4,0]}, scaffold:'up', revealRows:4, revealJitter:0.12},
-  {label:'05', title:'Kołkowanie mechaniczne',
-   text:'Dodatkowe mocowanie łącznikami termoizolacyjnymi — talerzykowe kołki rozprężne zapobiegają odspojeniu płyt przy wietrze.',
-   chips:['Łączniki termo','Wzór rozmieszczenia wg normy'],
-   tex:()=>texFoam(true), ground:'#bfa87e', sky:'#a6afb4',
-   cam:{p:[5.1,2.2,5.5], l:[0.5,1.7,0.4]}, scaffold:'up', revealRows:4, revealJitter:0.1,
-   holdUntilOwnStage:true},
-  {label:'06', title:'Warstwa zbrojąca z siatką',
-   text:'Naklejenie siatki z włókna szklanego w zaprawie klejowej — warstwa, która przejmuje naprężenia i chroni izolację przed uszkodzeniami.',
-   chips:['Siatka 160g/m²','Wzmocnienie naroży okien'],
-   tex:()=>texMesh(), ground:'#b9a276', sky:'#aab3b7',
-   cam:{p:[5.7,2.7,6.2], l:[0,1.8,0]}, scaffold:'up', revealRows:16, revealJitter:0.05},
-  {label:'07', title:'Grunt pod tynk',
-   text:'Grunt podkładowy ujednolica chłonność podłoża i poprawia przyczepność tynku, dobierany pod docelową kolorystykę.',
-   chips:['Grunt pod tynk barwiony'],
-   tex:()=>texPrimer(), ground:'#b39c74', sky:'#adb6b9',
-   cam:{p:[6.9,2.9,7.1], l:[0,1.9,0]}, scaffold:'up', revealRows:16, revealJitter:0.05},
-  {label:'08', title:'Tynk elewacyjny i kolor',
-   text:'Nakładanie tynku silikonowo-silikatowego w wybranej kolorystyce i fakturze — moment, w którym elewacja zyskuje ostateczny charakter.',
-   chips:['Tynk silikonowo-silikatowy','Struktura baranek 1,5mm'],
-   tex:()=>texFinal('#efe9db', true), ground:'#a99a6e', sky:'#8fb0c9',
-   cam:{p:[8.6,3.2,8.6], l:[0,1.7,0]}, scaffold:'fall', revealRows:14, revealJitter:0.05},
-  {label:'09', title:'Obsadzanie parapetów',
-   text:'Montaż zewnętrznych parapetów podokiennych z blachy powlekanej — osadzane ze spadkiem odprowadzającym wodę od elewacji, dokładnie pod każdym oknem.',
-   chips:['Parapet z blachy powlekanej','Spadek odwadniający'],
-   tex:()=>texFinal('#efe9db', true), ground:'#8fae63', sky:'#78a8d0',
-   cam:{p:[3.6,1.9,6.4], l:[1.4,1.1,1.6]}, sameTex:true},
-  {label:'10', title:'Podbitka i rury spadowe',
-   text:'Montaż podbitki dachowej zamykającej okap, a następnie rynien i rur spadowych odprowadzających wodę od elewacji — ostatnie obróbki blacharskie przed zdjęciem zabezpieczeń.',
-   chips:['Podbitka okapowa','Rynny i rury spadowe'],
-   tex:()=>texFinal('#efe9db', true), ground:'#8fae63', sky:'#78a8d0',
-   cam:{p:[7.4,2.1,7.6], l:[2.0,2.6,1.0]}, sameTex:true},
-  {label:'11', title:'Efekt końcowy i otoczenie',
-   text:'Parapety i oświetlenie elewacyjne gotowe, rusztowanie zdjęte, a otoczenie zagospodarowane. Tak wygląda dokończona historia ocieplenia.',
-   chips:['Oświetlenie elewacyjne','Zagospodarowanie terenu'],
-   tex:()=>texFinal('#f2ede0', true), ground:'#6f9a58', sky:'#5f9bd6',
-   cam:{p:[-10.2,3.6,9.8], l:[-1,1.8,0]}, scaffold:'down', revealRows:10, revealJitter:0.04},
-];
-
-/* =========================================================
-   THREE.JS SCENE
-   ========================================================= */
-const canvas = document.getElementById('scene-canvas');
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false, logarithmicDepthBuffer:true});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x9aa4ab);
-scene.fog = new THREE.Fog(0x9aa4ab, 16, 55);
-
-/* near/far kept tight on purpose: a wide near..far span starves the depth
-   buffer of precision at these scales, which is what made the window panes
-   and frames flicker/"jump" as the camera moved. */
-const camera = new THREE.PerspectiveCamera(42, window.innerWidth/window.innerHeight, 0.3, 90);
-
-// The stage camera positions below were framed against a wide (desktop-ish)
-// aspect ratio. A PerspectiveCamera's fov is vertical, so on a narrow
-// portrait phone screen the effective horizontal field of view is much
-// tighter — same fov, less width — which is why only a cropped fragment of
-// the house used to show up on mobile. To compensate, we push the camera
-// further back from its look target as the aspect ratio gets narrower than
-// that reference, without changing fov or the look direction.
-const REF_ASPECT = 1.6;
-function computeCamScale(){
-  const aspect = window.innerWidth/window.innerHeight;
-  if(aspect >= REF_ASPECT) return 1;
-  return THREE.MathUtils.clamp(REF_ASPECT/aspect, 1, 2.4);
-}
-let camScale = computeCamScale();
-let lastCamRaw = {x:7.6,y:3.0,z:7.6};
-
-camera.position.set(
-  0 + (7.6-0)*camScale,
-  1.5 + (3.0-1.5)*camScale,
-  0 + (7.6-0)*camScale
-);
-let lookTarget = new THREE.Vector3(0,1.5,0);
-camera.lookAt(lookTarget);
-
-// lights
-const ambient = new THREE.AmbientLight(0xffffff, 0.65);
-scene.add(ambient);
-const sun = new THREE.DirectionalLight(0xffffff, 0.9);
-sun.position.set(6,9,4);
-sun.castShadow = true;
-sun.shadow.mapSize.set(1024,1024);
-scene.add(sun);
-const fill = new THREE.DirectionalLight(0x88a0c0, 0.25);
-fill.position.set(-6,4,-4);
-scene.add(fill);
-
-// ground — a small dirt/grass "work patch" right at the house, sitting a hair
-// above a large permanent green field so the property always reads as a
-// countryside plot, even mid-construction.
-function texField(){
-  const {c,ctx} = baseCanvas(256,256);
-  ctx.fillStyle = '#6f9450'; ctx.fillRect(0,0,256,256);
-  for(let i=0;i<900;i++){
-    ctx.fillStyle = `rgba(${90+Math.random()*40},${120+Math.random()*50},${60+Math.random()*30},0.5)`;
-    ctx.fillRect(Math.random()*256, Math.random()*256, 2, 6);
-  }
-  return c;
-}
-const fieldTex = new THREE.CanvasTexture(texField());
-fieldTex.wrapS = fieldTex.wrapT = THREE.RepeatWrapping;
-fieldTex.repeat.set(24,24);
-const fieldGeo = new THREE.PlaneGeometry(220,220);
-const fieldMat = new THREE.MeshStandardMaterial({map:fieldTex, roughness:1});
-const field = new THREE.Mesh(fieldGeo, fieldMat);
-field.rotation.x = -Math.PI/2;
-field.position.y = -0.02;
-field.receiveShadow = true;
-scene.add(field);
-
-const groundGeo = new THREE.PlaneGeometry(22,20);
-const groundMat = new THREE.MeshStandardMaterial({color:0xc9b389, roughness:1});
-const ground = new THREE.Mesh(groundGeo, groundMat);
-ground.rotation.x = -Math.PI/2;
-ground.receiveShadow = true;
-scene.add(ground);
-
-// house group
-const house = new THREE.Group();
-scene.add(house);
-
-const W=8, D=5, WH=3.2, RIDGE=2.6;
-
-let wallTexture = new THREE.CanvasTexture(texBlock());
-wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
-wallTexture.repeat.set(2,1);
-
-const wallMat = new THREE.MeshStandardMaterial({map:wallTexture, roughness:0.92});
-
-// blachodachówka: profiled steel roof sheet — horizontal courses with a
-// shaded gradient faking the trapezoidal profile, plus vertical panel
-// seams and faint fastener dots
-function texMetalRoof(){
-  const {c,ctx} = baseCanvas(256,256);
-  ctx.fillStyle = '#33363c'; ctx.fillRect(0,0,256,256);
-  const courses = 4, ch = 256/courses;
-  for(let r=0;r<courses;r++){
-    const y = r*ch;
-    const grad = ctx.createLinearGradient(0,y,0,y+ch);
-    grad.addColorStop(0,'rgba(255,255,255,0.12)');
-    grad.addColorStop(0.18,'rgba(255,255,255,0.03)');
-    grad.addColorStop(0.55,'rgba(0,0,0,0.06)');
-    grad.addColorStop(0.85,'rgba(0,0,0,0.24)');
-    grad.addColorStop(1,'rgba(0,0,0,0.34)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0,y,256,ch);
-    ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(256,y); ctx.stroke();
-  }
-  const panels = 8, pw = 256/panels;
-  ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 1.5;
-  for(let i=1;i<panels;i++){
-    const x = i*pw;
-    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,256); ctx.stroke();
-  }
-  ctx.fillStyle = 'rgba(255,255,255,0.14)';
-  for(let r=0;r<courses;r++){
-    for(let i=0;i<panels;i++){
-      const x = i*pw+pw/2, y = r*ch+6;
-      ctx.beginPath(); ctx.arc(x,y,1.3,0,Math.PI*2); ctx.fill();
-    }
-  }
-  noise(ctx,256,256,8);
-  return c;
-}
-const roofMetalTex = new THREE.CanvasTexture(texMetalRoof());
-roofMetalTex.wrapS = roofMetalTex.wrapT = THREE.RepeatWrapping;
-roofMetalTex.repeat.set(4,2);
-const roofTileMat = new THREE.MeshStandardMaterial({map:roofMetalTex, color:0xffffff, roughness:0.55, metalness:0.35});
-const wallGeo = new THREE.BoxGeometry(W, WH, D);
-const wallsMesh = new THREE.Mesh(wallGeo, wallMat);
-wallsMesh.position.y = WH/2;
-wallsMesh.castShadow = true; wallsMesh.receiveShadow = true;
-house.add(wallsMesh);
-
-// garage — attached to the building mass as a lower side wing, sharing the
-// same wall material (so it goes through the same insulation stages) and
-// its own single-slope roof tying into the main eave line.
-const GW = 3.4, GD = D, G_LOW = 2.35, G_HIGH = WH - 0.15;
-const garageX = -(W/2 + GW/2);
-
-const garageWallGeo = new THREE.BoxGeometry(GW, G_LOW, GD);
-const garageWalls = new THREE.Mesh(garageWallGeo, wallMat);
-garageWalls.position.set(garageX, G_LOW/2, 0);
-garageWalls.castShadow = true; garageWalls.receiveShadow = true;
-house.add(garageWalls);
-
-// garage — its own small, symmetric gable roof (same construction as the
-// main roof, just scaled down), with its ridge running parallel to the
-// main ridge. This replaces an earlier tilted lean-to slab, which both
-// looked skewed and caused a z-fighting flicker where it met the main
-// roof's underside.
-const G_RIDGE = 0.9;
-const garageRoofShape = new THREE.Shape();
-garageRoofShape.moveTo(-GW/2-0.3, 0);
-garageRoofShape.lineTo(GW/2+0.3, 0);
-garageRoofShape.lineTo(0, G_RIDGE);
-garageRoofShape.lineTo(-GW/2-0.3, 0);
-const garageRoofGeo = new THREE.ExtrudeGeometry(garageRoofShape, {depth:GD+0.5, bevelEnabled:false});
-garageRoofGeo.translate(0,0,-(GD+0.5)/2);
-const garageRoof = new THREE.Mesh(garageRoofGeo, [roofTileMat, roofTileMat]);
-garageRoof.position.set(garageX, G_LOW, 0);
-garageRoof.castShadow = true;
-house.add(garageRoof);
-
-// ---------- progressive reveal overlays ----------
-// Each of these duplicates a wall surface exactly, but carries the NEXT
-// stage's texture masked by a rank-mask alphaMap, so the new material
-// appears board-by-board / course-by-course as the person scrolls through
-// a stage, instead of the whole surface swapping instantly.
-function makeOverlay(geo, position){
-  const mat = new THREE.MeshStandardMaterial({roughness:0.92, alphaTest:0.5, polygonOffset:true, polygonOffsetFactor:-1, polygonOffsetUnits:-1});
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.copy(position);
-  mesh.castShadow = false; mesh.receiveShadow = false;
-  mesh.renderOrder = 1;
-  mesh.visible = false;
-  house.add(mesh);
-  return {mesh, mat};
-}
-const overlayWall = makeOverlay(wallGeo, wallsMesh.position);
-const overlayGarageWall = makeOverlay(garageWallGeo, garageWalls.position);
-const overlays = [overlayWall, overlayGarageWall];
-let revealActive = false;
-
-// roof + gable prism
-const roofShape = new THREE.Shape();
-roofShape.moveTo(-W/2-0.35, 0);
-roofShape.lineTo(W/2+0.35, 0);
-roofShape.lineTo(0, RIDGE);
-roofShape.lineTo(-W/2-0.35, 0);
-const roofGeo = new THREE.ExtrudeGeometry(roofShape, {depth:D+0.7, bevelEnabled:false});
-roofGeo.translate(0,0,-(D+0.7)/2);
-// solid black, independent of the wall material — so the roof/gable never
-// shifts color as the wall goes through its insulation stages.
-const roofMesh = new THREE.Mesh(roofGeo, [roofTileMat, roofTileMat]);
-roofMesh.position.set(0, WH, 0);
-roofMesh.castShadow = true;
-house.add(roofMesh);
-
-// windows & door — built as real solids with a genuine reveal depth so the
-// glass and frame never sit on (or fight over) the same surface as the wall.
-
-// shared procedural wood-grain texture generator for frames, the entrance
-// door and the garage door
-function texWood(base, dark){
-  const {c,ctx} = baseCanvas(256,256);
-  ctx.fillStyle = base; ctx.fillRect(0,0,256,256);
-  for(let i=0;i<46;i++){
-    const x = Math.random()*256;
-    ctx.strokeStyle = `rgba(30,15,5,${0.06+Math.random()*0.14})`;
-    ctx.lineWidth = 1+Math.random()*2;
-    ctx.beginPath();
-    ctx.moveTo(x+(Math.random()-0.5)*8, 0);
-    ctx.bezierCurveTo(x+(Math.random()-0.5)*16,85, x+(Math.random()-0.5)*16,170, x+(Math.random()-0.5)*8,256);
-    ctx.stroke();
-  }
-  ctx.fillStyle = dark; ctx.globalAlpha = 0.08;
-  for(let i=0;i<200;i++){ ctx.fillRect(Math.random()*256, Math.random()*256, 6, 1); }
-  ctx.globalAlpha = 1;
-  noise(ctx,256,256,7);
-  return c;
-}
-
-const frameWoodTex = new THREE.CanvasTexture(texWood('#7a4a28','#4a2c16'));
-const frameMat = new THREE.MeshStandardMaterial({map:frameWoodTex, roughness:0.72, side:THREE.DoubleSide});
-
-// glass: instead of one flat colour, paint a procedural "reflection"
-// texture onto the pane — a sky-to-deep-water vertical gradient (what a
-// real window reflects: bright sky up top, darker below), a soft diagonal
-// sun-glare streak, a faint secondary streak for depth, and a few subtle
-// horizontal reflection bands, all lightly grained with noise. This is
-// still a plain PBR material (no custom shader — no risk of a silent
-// shader compile failure), just textured instead of solid-coloured.
-// Double-sided so it can never disappear due to a face-winding/normal
-// mistake, with a faint blue emissive glow so it never reads as pure
-// black in low light.
-function texGlass(){
-  const {c,ctx} = baseCanvas(512,512);
-
-  const sky = ctx.createLinearGradient(0,0,0,512);
-  sky.addColorStop(0,   '#cdeaf7');
-  sky.addColorStop(0.32,'#6fabd4');
-  sky.addColorStop(0.68,'#215f8c');
-  sky.addColorStop(1,   '#0f3552');
-  ctx.fillStyle = sky;
-  ctx.fillRect(0,0,512,512);
-
-  // faint horizontal reflection bands, like distant rooflines/sky mirrored
-  // in the pane
-  for(let i=0;i<7;i++){
-    ctx.globalAlpha = 0.05;
-    ctx.fillStyle = i%2===0 ? '#ffffff' : '#06263d';
-    ctx.fillRect(0, i*512/7, 512, 512/22);
-  }
-  ctx.globalAlpha = 1;
-
-  // main diagonal sun-glare streak
-  const glare = ctx.createLinearGradient(0,512,512,0);
-  glare.addColorStop(0,    'rgba(255,255,255,0)');
-  glare.addColorStop(0.40, 'rgba(255,255,255,0)');
-  glare.addColorStop(0.50, 'rgba(255,255,255,0.62)');
-  glare.addColorStop(0.60, 'rgba(255,255,255,0)');
-  glare.addColorStop(1,    'rgba(255,255,255,0)');
-  ctx.fillStyle = glare;
-  ctx.fillRect(0,0,512,512);
-
-  // thinner, fainter secondary streak for extra depth
-  const glare2 = ctx.createLinearGradient(0,512,512,0);
-  glare2.addColorStop(0,    'rgba(255,255,255,0)');
-  glare2.addColorStop(0.12, 'rgba(255,255,255,0)');
-  glare2.addColorStop(0.17, 'rgba(255,255,255,0.28)');
-  glare2.addColorStop(0.22, 'rgba(255,255,255,0)');
-  glare2.addColorStop(1,    'rgba(255,255,255,0)');
-  ctx.fillStyle = glare2;
-  ctx.fillRect(0,0,512,512);
-
-  noise(ctx,512,512,6);
-  return c;
-}
-const glassTex = new THREE.CanvasTexture(texGlass());
-
-const glassMat = new THREE.MeshPhysicalMaterial({
-  map: glassTex,
-  color: 0xffffff,
-  metalness: 0.1,
-  roughness: 0.05,
-  clearcoat: 1.0,
-  clearcoatRoughness: 0.04,
-  emissive: 0x0b2f4d,
-  emissiveIntensity: 0.15,
-  side: THREE.DoubleSide
-});
-
-const wallOuter = D/2; // outer face of the main house wall box
-const garageOuter = GD/2; // outer face of the garage wall box (same depth as house)
-
-const doorWoodTex = new THREE.CanvasTexture((function(){
-  const c = texWood('#6b3f22','#3f2312');
-  const ctx = c.getContext('2d');
-  ctx.strokeStyle = 'rgba(25,12,4,0.55)'; ctx.lineWidth = 5;
-  ctx.strokeRect(22,18,256-44,112);
-  ctx.strokeRect(22,150,256-44,88);
-  return c;
-})());
-const doorMat = new THREE.MeshStandardMaterial({map:doorWoodTex, roughness:0.65});
-
-function texGarageDoor(){
-  const c = texWood('#6b3f22','#3f2312');
-  const ctx = c.getContext('2d');
-  ctx.strokeStyle = 'rgba(25,12,4,0.5)'; ctx.lineWidth = 3;
-  for(let i=1;i<7;i++){
-    ctx.beginPath(); ctx.moveTo(0, i*256/7); ctx.lineTo(256, i*256/7); ctx.stroke();
-  }
-  return c;
-}
-const garageDoorMat = new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(texGarageDoor()), roughness:0.65});
-
-// window sills get their own material (light painted metal, not the wood
-// frame colour) so they can be faded in during their own dedicated stage
-const sillMat = new THREE.MeshStandardMaterial({color:0xd9d5c9, roughness:0.5, metalness:0.15, transparent:true, opacity:0});
-const sillMats = [sillMat];
-const sillMeshes = [];
-
-function addOpening(x, y, w, h, {door=false, mat=null, sill=false, vSplits=1, hSplits=1} = {}, outerZ=wallOuter){
-  // IMPORTANT: the wall itself is one solid box with no cut-out for these
-  // openings. That means anything positioned AT or BEHIND the wall's own
-  // outer face (z <= outerZ) is invisible — the wall's flat face wins the
-  // depth test and hides it completely. So every part built here (frame,
-  // glass, mullions, sill, handle) must sit strictly IN FRONT of outerZ —
-  // but only by a hair, so it still reads as flush rather than protruding.
-  const frameDepth = 0.03;   // barely proud of the wall — flush look
-  const border = 0.09;
-  const frameZ = outerZ + frameDepth/2;              // spans [outerZ, outerZ+0.03]
-  const frameBarMat = frameMat;
-  const topBar = new THREE.Mesh(new THREE.BoxGeometry(w, border, frameDepth), frameBarMat);
-  topBar.position.set(x, y + h/2 - border/2, frameZ);
-  const botBar = new THREE.Mesh(new THREE.BoxGeometry(w, border, frameDepth), frameBarMat);
-  botBar.position.set(x, y - h/2 + border/2, frameZ);
-  const leftBar = new THREE.Mesh(new THREE.BoxGeometry(border, h - border*2, frameDepth), frameBarMat);
-  leftBar.position.set(x - w/2 + border/2, y, frameZ);
-  const rightBar = new THREE.Mesh(new THREE.BoxGeometry(border, h - border*2, frameDepth), frameBarMat);
-  rightBar.position.set(x + w/2 - border/2, y, frameZ);
-  [topBar,botBar,leftBar,rightBar].forEach(b=>{ b.castShadow = true; house.add(b); });
-
-  // glass / door leaf: fills the hole in the frame, flush with (barely in
-  // front of) the wall surface rather than sitting proud of it.
-  const leafW = w - border*2, leafH = h - border*2;
-  const leafDepth = 0.018;
-  const leafZ = outerZ + 0.006 + leafDepth/2;        // spans [outerZ+0.006, outerZ+0.024]
-  const leafMat = mat || (door ? doorMat : glassMat);
-  const leaf = new THREE.Mesh(new THREE.BoxGeometry(leafW, leafH, leafDepth), leafMat);
-  leaf.position.set(x, y, leafZ);
-  house.add(leaf);
-
-  if(door && !mat){
-    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.015,0.18,8), new THREE.MeshStandardMaterial({color:0xb9b0a0, metalness:0.6, roughness:0.3}));
-    handle.rotation.z = Math.PI/2;
-    handle.position.set(x + leafW*0.28, y, outerZ + 0.035);
-    house.add(handle);
+    }, { passive: true });
   }
 
-  // slim muntin bars across real glazing (not the door, not the solid
-  // garage door) so the panes read as an actual divided window
-  if(!door && !mat){
-    const barZ = outerZ + 0.02;
-    const barMat = frameMat;
-    // vertical dividers: vSplits bars split the pane into (vSplits+1) columns
-    for(let i=1;i<=vSplits;i++){
-      const vx = x - w/2 + (w*i)/(vSplits+1);
-      const vBar = new THREE.Mesh(new THREE.BoxGeometry(0.035, leafH, 0.015), barMat);
-      vBar.position.set(vx, y, barZ);
-      house.add(vBar);
-    }
-    // horizontal dividers: hSplits bars split the pane into (hSplits+1) rows
-    for(let j=1;j<=hSplits;j++){
-      const hy = y - h/2 + (h*j)/(hSplits+1);
-      const hBar = new THREE.Mesh(new THREE.BoxGeometry(leafW, 0.035, 0.015), barMat);
-      hBar.position.set(x, hy, barZ);
-      house.add(hBar);
-    }
-    // a small sill under the pane, projecting only slightly further than
-    // the frame itself — enough to read as a sill, not enough to float.
-    // Starts hidden/opacity 0 and slightly high; its own stage fades it in
-    // and settles it down into place.
-    if(sill){
-      const sillW = w + 0.3, sillD = 0.09;
-      const sillMesh = new THREE.Mesh(new THREE.BoxGeometry(sillW, 0.05, sillD), sillMat);
-      const baseY = y - h/2 - 0.02;
-      sillMesh.position.set(x, baseY, outerZ + frameDepth + sillD/2 - 0.02);
-      sillMesh.userData.baseY = baseY;
-      sillMesh.castShadow = true;
-      house.add(sillMesh);
-      sillMeshes.push(sillMesh);
-    }
-  }
-}
-// upper-left window — pulled well clear of the entrance door below it so
-// the two openings read as separate, independent cut-outs in the wall
-// instead of visually merging into one shape. Its sill sits at the same
-// height as the big window's sill (y - h/2 = 0.95 - 0.7 = 0.25) so both
-// windows line up on one common, level band across the facade instead of
-// floating at two different heights.
-addOpening(-2.7, 0.95, 1.0, 1.4, {sill:true});
-// ground floor: entrance door near the garage, left untouched
-addOpening(-1.0, 1.1, 1.0, 2.0, {door:true});
-// the large window on the right: real blue glazing only — its own frame,
-// sill and cross-mullions — with no second window overlapping it above.
-// Same sill height as the window above (y - h/2 = 0.25) keeps both windows
-// level with one another.
-addOpening(1.9, 1.2, 2.0, 1.9, {sill:true, vSplits:1, hSplits:1});
-// garage door, on the garage's own front face
-addOpening(garageX, 1.15, GW - 0.5, 2.1, {mat:garageDoorMat}, garageOuter);
-
-// ---------- kostka brukowa: ścieżka do wejścia + podjazd do garażu ----------
-// Finished landscaping around the plot — visible from the start, the same
-// way the mature trees and lawn already surround the building site.
-function texPaving(){
-  const {c,ctx} = baseCanvas(512,512);
-  ctx.fillStyle = '#35363a'; ctx.fillRect(0,0,512,512);
-  const cols=8, rows=8, cw=512/cols, rh=512/rows;
-  for(let r=0;r<rows;r++){
-    const offset = (r%2===0)?0:cw/2;
-    for(let cx=-1; cx<=cols; cx++){
-      const x = cx*cw+offset, y = r*rh;
-      const shade = 42+Math.random()*26;
-      ctx.fillStyle = `rgb(${shade+3},${shade+1},${shade-2})`;
-      ctx.fillRect(x+2, y+2, cw-4, rh-4);
-    }
-  }
-  ctx.strokeStyle = 'rgba(12,12,13,0.65)'; ctx.lineWidth = 3;
-  for(let r=0;r<=rows;r++){ const y=r*rh; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(512,y); ctx.stroke(); }
-  for(let r=0;r<rows;r++){
-    const offset = (r%2===0)?0:cw/2;
-    for(let cx=-1; cx<=cols+1; cx++){
-      const x = cx*cw+offset;
-      ctx.beginPath(); ctx.moveTo(x, r*rh); ctx.lineTo(x, (r+1)*rh); ctx.stroke();
-    }
-  }
-  noise(ctx,512,512,10);
-  return c;
-}
-
-const doorX = -1.0;          // matches the entrance door opening above
-const frontZ = wallOuter;    // front face of the house (D/2)
-const apronW = 1.2;          // width of the paved apron hugging every wall
-const walkW = 1.15;          // width of the paved walkway to the door
-const walkEndZ = 8.0;        // how far the walkway runs into the yard
-const driveW = GW + 1.2;     // width of the driveway apron
-const driveEndZ = 9.6;       // out toward where a road would be
-const tileMeters = 0.6;
-
-function makePavedRect(w, len, cx, cz){
-  const tex = new THREE.CanvasTexture(texPaving());
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(w/tileMeters, len/tileMeters);
-  const mat = new THREE.MeshStandardMaterial({map:tex, roughness:0.95});
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, len), mat);
-  mesh.rotation.x = -Math.PI/2;
-  mesh.position.set(cx, 0.015, cz);
-  mesh.receiveShadow = true;
-  scene.add(mesh);
-  return mesh;
-}
-
-// plot-wide paving: covers every remaining patch of the plot in the same
-// pavers, so nothing but the garden beds is left bare. Sits a hair below
-// the walkway/driveway/apron so those still read as the "main" paths,
-// and well below the garden beds so the gravel shows on top of it.
-const plotX0 = -11, plotX1 = 11, plotZ0 = -10, plotZ1 = 10;
-const plazaTex = new THREE.CanvasTexture(texPaving());
-plazaTex.wrapS = plazaTex.wrapT = THREE.RepeatWrapping;
-plazaTex.repeat.set((plotX1-plotX0)/tileMeters, (plotZ1-plotZ0)/tileMeters);
-const plazaMat = new THREE.MeshStandardMaterial({map:plazaTex, roughness:0.95});
-const plaza = new THREE.Mesh(new THREE.PlaneGeometry(plotX1-plotX0, plotZ1-plotZ0), plazaMat);
-plaza.rotation.x = -Math.PI/2;
-plaza.position.set((plotX0+plotX1)/2, 0.01, (plotZ0+plotZ1)/2);
-plaza.receiveShadow = true;
-scene.add(plaza);
-
-// perimeter apron: a ring of pavers hugging every wall of the house and
-// garage, built as an outer rectangle with the building's own footprint
-// punched out as a hole so it sits flush against all four sides at once
-const footMinX = garageX - GW/2, footMaxX = W/2;
-const footMinZ = -D/2, footMaxZ = D/2; // footMaxZ === frontZ
-const ringMinX = footMinX - apronW, ringMaxX = footMaxX + apronW;
-const ringMinZ = footMinZ - apronW, ringMaxZ = footMaxZ + apronW;
-
-const apronShape = new THREE.Shape();
-apronShape.moveTo(ringMinX, ringMinZ);
-apronShape.lineTo(ringMaxX, ringMinZ);
-apronShape.lineTo(ringMaxX, ringMaxZ);
-apronShape.lineTo(ringMinX, ringMaxZ);
-apronShape.lineTo(ringMinX, ringMinZ);
-const footHole = new THREE.Path();
-footHole.moveTo(footMinX, footMinZ);
-footHole.lineTo(footMaxX, footMinZ);
-footHole.lineTo(footMaxX, footMaxZ);
-footHole.lineTo(footMinX, footMaxZ);
-footHole.lineTo(footMinX, footMinZ);
-apronShape.holes.push(footHole);
-
-const apronTex = new THREE.CanvasTexture(texPaving());
-apronTex.wrapS = apronTex.wrapT = THREE.RepeatWrapping;
-apronTex.repeat.set((ringMaxX-ringMinX)/tileMeters, (ringMaxZ-ringMinZ)/tileMeters);
-const apronMat = new THREE.MeshStandardMaterial({map:apronTex, roughness:0.95});
-const apronGeo = new THREE.ShapeGeometry(apronShape);
-apronGeo.rotateX(-Math.PI/2);
-const apron = new THREE.Mesh(apronGeo, apronMat);
-apron.position.y = 0.015;
-apron.receiveShadow = true;
-scene.add(apron);
-
-// walkway: continues from the apron's outer edge, straight out to the yard
-const walkStartZ = ringMaxZ;
-const walkLen = walkEndZ - walkStartZ;
-makePavedRect(walkW, walkLen, doorX, walkStartZ + walkLen/2);
-
-// entrance steps: a small two-tier stoop right at the door, closing the
-// small gap between ground level and the door's threshold
-const stepMat = new THREE.MeshStandardMaterial({color:0xcac5b7, roughness:0.9});
-const doorW = 1.0; // matches the entrance door opening's width
-function addStep(y0, y1, depth, width){
-  const h = y1 - y0;
-  const step = new THREE.Mesh(new THREE.BoxGeometry(width, h, depth), stepMat);
-  step.position.set(doorX, y0 + h/2, frontZ + depth/2);
-  step.castShadow = true; step.receiveShadow = true;
-  scene.add(step);
-}
-addStep(0, 0.05, 0.4, doorW + 0.6);
-addStep(0.05, 0.1, 0.25, doorW + 0.3);
-
-// driveway: continues from the apron's outer edge, out toward the road
-const driveLen = driveEndZ - walkStartZ;
-makePavedRect(driveW, driveLen, garageX, walkStartZ + driveLen/2);
-
-// connector: a short cross-path near the yard end, linking the driveway to
-// the walkway so you can step from the car straight to the front door
-// without crossing the lawn
-const connX0 = garageX + driveW/2, connX1 = doorX - walkW/2;
-const connZ0 = walkEndZ - 1.1, connZ1 = walkEndZ;
-makePavedRect(connX1 - connX0, connZ1 - connZ0, (connX0+connX1)/2, (connZ0+connZ1)/2);
-
-// ---------- garden beds flanking the walkway ----------
-function texGravel(){
-  const {c,ctx} = baseCanvas(256,256);
-  ctx.fillStyle = '#b7b0a3'; ctx.fillRect(0,0,256,256);
-  for(let i=0;i<950;i++){
-    const shade = 120+Math.random()*95;
-    const rx = 2+Math.random()*3.2, ry = rx*(0.6+Math.random()*0.3);
-    ctx.fillStyle = `rgb(${shade},${shade-6},${shade-16})`;
-    ctx.save();
-    ctx.translate(Math.random()*256, Math.random()*256);
-    ctx.rotate(Math.random()*Math.PI);
-    ctx.beginPath();
-    ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);
-    ctx.fill();
-    ctx.restore();
-  }
-  noise(ctx,256,256,14);
-  return c;
-}
-const gravelTex = new THREE.CanvasTexture(texGravel());
-gravelTex.wrapS = gravelTex.wrapT = THREE.RepeatWrapping;
-const gravelMat = new THREE.MeshStandardMaterial({map:gravelTex, roughness:1});
-
-const bedWidth = 1.3;
-const bedZ0 = walkStartZ, bedZ1 = walkEndZ, bedLen = bedZ1 - bedZ0;
-gravelTex.repeat.set(bedWidth/0.22, bedLen/0.22);
-function makeBed(cx){
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(bedWidth, bedLen), gravelMat);
-  mesh.rotation.x = -Math.PI/2;
-  mesh.position.set(cx, 0.02, bedZ0 + bedLen/2);
-  mesh.receiveShadow = true;
-  scene.add(mesh);
-}
-const leftBedCx = doorX - walkW/2 - bedWidth/2;
-const rightBedCx = doorX + walkW/2 + bedWidth/2;
-makeBed(leftBedCx);
-makeBed(rightBedCx);
-
-// ---------- ogrodzenie dookoła działki ----------
-// simple post-and-rail fence tracing the same rectangle as the plot-wide
-// paving, with a gate-width gap on the front edge lined up with the
-// driveway so cars (and the eye) can pass straight through
-const fenceWoodTex = new THREE.CanvasTexture(texWood('#5a4128','#2e1e10'));
-fenceWoodTex.wrapS = fenceWoodTex.wrapT = THREE.RepeatWrapping;
-const postMat = new THREE.MeshStandardMaterial({map:fenceWoodTex, roughness:0.85});
-const railMat = new THREE.MeshStandardMaterial({map:fenceWoodTex, roughness:0.85});
-const fenceGroup = new THREE.Group();
-
-function addFencePost(x,z){
-  const post = new THREE.Mesh(new THREE.BoxGeometry(0.1,1.0,0.1), postMat);
-  post.position.set(x,0.5,z);
-  post.castShadow = true;
-  fenceGroup.add(post);
-}
-function addFenceRail(xA,zA,xB,zB){
-  const len = Math.hypot(xB-xA, zB-zA);
-  if(len<=0.02) return;
-  const angle = Math.atan2(zB-zA, xB-xA);
-  const midX=(xA+xB)/2, midZ=(zA+zB)/2;
-  [0.78, 0.42].forEach(y=>{
-    const rail = new THREE.Mesh(new THREE.BoxGeometry(len, 0.07, 0.06), railMat);
-    rail.position.set(midX, y, midZ);
-    rail.rotation.y = -angle;
-    rail.castShadow = true;
-    fenceGroup.add(rail);
-  });
-}
-function buildFenceRun(xA,zA,xB,zB){
-  const len = Math.hypot(xB-xA, zB-zA);
-  if(len<=0.02){ addFencePost(xA,zA); return; }
-  const dirX=(xB-xA)/len, dirZ=(zB-zA)/len;
-  const spacing = 2.2;
-  const n = Math.max(1, Math.round(len/spacing));
-  const step = len/n;
-  for(let i=0;i<n;i++){
-    const ax = xA+dirX*i*step, az = zA+dirZ*i*step;
-    const bx = xA+dirX*(i+1)*step, bz = zA+dirZ*(i+1)*step;
-    addFencePost(ax,az);
-    addFenceRail(ax,az,bx,bz);
-  }
-  addFencePost(xB,zB);
-}
-
-const gateHalf = (driveW+1.0)/2;
-const gateX0 = garageX - gateHalf, gateX1 = garageX + gateHalf;
-
-buildFenceRun(plotX0, plotZ0, plotX0, plotZ1); // left side
-buildFenceRun(plotX1, plotZ0, plotX1, plotZ1); // right side
-buildFenceRun(plotX0, plotZ0, plotX1, plotZ0); // back side
-buildFenceRun(plotX0, plotZ1, gateX0, plotZ1); // front side, left of gate
-buildFenceRun(gateX1, plotZ1, plotX1, plotZ1); // front side, right of gate
-
-scene.add(fenceGroup);
-
-// countryside decor: pines + broadleaf trees, scattered close in and then
-// thickening into a tree line / forest edge toward the horizon, plus a
-// distant barn — this reads as a house set in fields, not a suburban plot.
-const pineFoliageMat = new THREE.MeshStandardMaterial({color:0x2f4f3a, roughness:0.95});
-const leafFoliageMat = new THREE.MeshStandardMaterial({color:0x4a6b3a, roughness:0.95});
-const trunkMat = new THREE.MeshStandardMaterial({color:0x4a3a2a, roughness:1});
-
-function makePine(scale=1){
-  const g = new THREE.Group();
-  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.1,0.6,6), trunkMat);
-  trunk.position.y=0.3; g.add(trunk);
-  const leaves = new THREE.Mesh(new THREE.ConeGeometry(0.55,1.6,8), pineFoliageMat);
-  leaves.position.y=1.2; g.add(leaves);
-  g.scale.setScalar(scale);
-  g.castShadow = true;
-  return g;
-}
-function makeBroadleaf(scale=1){
-  const g = new THREE.Group();
-  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.12,0.7,6), trunkMat);
-  trunk.position.y=0.35; g.add(trunk);
-  const leaves = new THREE.Mesh(new THREE.SphereGeometry(0.7,8,8), leafFoliageMat);
-  leaves.position.y=1.25; leaves.scale.y=0.85; g.add(leaves);
-  g.scale.setScalar(scale);
-  g.castShadow = true;
-  return g;
-}
-function addTreeRing(x, z, radius=0.55){
-  const ringTex = new THREE.CanvasTexture(texGravel());
-  ringTex.wrapS = ringTex.wrapT = THREE.RepeatWrapping;
-  ringTex.repeat.set((radius*2)/0.22, (radius*2)/0.22);
-  const ringMat = new THREE.MeshStandardMaterial({map:ringTex, roughness:1});
-  const ring = new THREE.Mesh(new THREE.CircleGeometry(radius, 28), ringMat);
-  ring.rotation.x = -Math.PI/2;
-  ring.position.set(x, 0.012, z);
-  ring.receiveShadow = true;
-  scene.add(ring);
-  return ring;
-}
-function scatterTrees(){
-  // a few individual trees close to the house, on the quiet side — each
-  // gets its own ring of pebbles at the base, since these stand right out
-  // on the paved plaza
-  const near = [[-9,0,3],[-9.5,0,-1.2],[6.8,0,3.4],[7.2,0,-3.6]];
-  near.forEach(([x,,z])=>{
-    const scale = 1.0+Math.random()*0.3;
-    const t = (Math.random()>0.5 ? makePine(scale) : makeBroadleaf(scale));
-    t.position.set(x,0,z);
-    scene.add(t);
-    addTreeRing(x, z, 0.5+scale*0.25);
-  });
-  // a loose forest edge ringing the horizon
-  const ringCount = 70;
-  for(let i=0;i<ringCount;i++){
-    const angle = (i/ringCount)*Math.PI*2 + Math.random()*0.15;
-    const radius = 22 + Math.random()*14;
-    const x = Math.cos(angle)*radius, z = Math.sin(angle)*radius;
-    const t = (Math.random()>0.45 ? makePine(1.4+Math.random()*1.2) : makeBroadleaf(1.3+Math.random()*1.1));
-    t.position.set(x,0,z);
-    scene.add(t);
-  }
-}
-scatterTrees();
-
-// small flower clumps + ornamental shrubs dressing up the garden beds
-const bloomColors = [0xd1495b, 0xedae49, 0xf4e04d, 0x8e7dbe, 0xf7f7f2, 0xef8354];
-function makeFlowerClump(scale=1){
-  const g = new THREE.Group();
-  const base = new THREE.Mesh(new THREE.SphereGeometry(0.14,6,6), leafFoliageMat);
-  base.position.y = 0.1; g.add(base);
-  const color = bloomColors[Math.floor(Math.random()*bloomColors.length)];
-  const bloomMat = new THREE.MeshStandardMaterial({color, roughness:0.6});
-  const bloomCount = 4+Math.floor(Math.random()*3);
-  for(let i=0;i<bloomCount;i++){
-    const bloom = new THREE.Mesh(new THREE.SphereGeometry(0.055,6,6), bloomMat);
-    const a = (i/bloomCount)*Math.PI*2;
-    bloom.position.set(Math.cos(a)*0.11, 0.18+Math.random()*0.05, Math.sin(a)*0.11);
-    g.add(bloom);
-  }
-  g.scale.setScalar(scale);
-  return g;
-}
-function plantBed(cx){
-  // a couple of small ornamental trees anchoring the ends of the bed, each
-  // with its own ring of pebbles at the base
-  [bedZ0+0.6, bedZ1-0.6].forEach(z=>{
-    const scale = 0.42+Math.random()*0.08;
-    const t = makeBroadleaf(scale);
-    t.position.set(cx, 0, z);
-    scene.add(t);
-    addTreeRing(cx, z, 0.35+scale*0.3);
-  });
-  // flower clumps scattered along the length of the bed
-  const clumpCount = 6;
-  for(let i=0;i<clumpCount;i++){
-    const z = bedZ0 + 1.3 + (bedLen-2.2)*(i/(clumpCount-1)) + (Math.random()-0.5)*0.3;
-    const x = cx + (Math.random()-0.5)*(bedWidth*0.5);
-    const clump = makeFlowerClump(0.9+Math.random()*0.3);
-    clump.position.set(x, 0, z);
-    scene.add(clump);
-  }
-}
-plantBed(leftBedCx);
-plantBed(rightBedCx);
-
-// a small distant barn instead of a suburban neighbour
-const barn = new THREE.Group();
-const barnBody = new THREE.Mesh(new THREE.BoxGeometry(2.6,2,2.2), new THREE.MeshStandardMaterial({color:0x8a4a3a, roughness:1}));
-barnBody.position.y=1; barn.add(barnBody);
-const barnRoofShape = new THREE.Shape();
-barnRoofShape.moveTo(-1.5,0); barnRoofShape.lineTo(1.5,0); barnRoofShape.lineTo(0,1.1); barnRoofShape.lineTo(-1.5,0);
-const barnRoofGeo = new THREE.ExtrudeGeometry(barnRoofShape, {depth:2.4, bevelEnabled:false});
-barnRoofGeo.translate(0,0,-1.2);
-const barnRoof = new THREE.Mesh(barnRoofGeo, new THREE.MeshStandardMaterial({color:0x3b3b3d, roughness:0.8}));
-barnRoof.position.y=2; barn.add(barnRoof);
-barn.position.set(15,0,-10);
-barn.rotation.y = -0.5;
-scene.add(barn);
-
-// ---------- scaffolding (erected in stage 2, struck before the final reveal) ----------
-const scaffoldGroup = new THREE.Group();
-house.add(scaffoldGroup);
-
-const pipeMat = new THREE.MeshStandardMaterial({color:0xd98a2b, roughness:0.55, metalness:0.35, transparent:true, opacity:1});
-const scaffoldMats = [pipeMat];
-
-function scPole(x,y,z,h){
-  const m = new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.035,h,6), pipeMat);
-  m.position.set(x,y+h/2,z);
-  scaffoldGroup.add(m);
-}
-function scBar(x0,y,z0,x1,z1){
-  const dx=x1-x0, dz=z1-z0, len=Math.sqrt(dx*dx+dz*dz);
-  const m = new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,len,6), pipeMat);
-  m.position.set((x0+x1)/2, y, (z0+z1)/2);
-  m.rotation.z = Math.PI/2;
-  m.rotation.y = -Math.atan2(dz,dx);
-  scaffoldGroup.add(m);
-}
-
-(function buildScaffold(){
-  const zFront = wallOuter + 0.55, zBack = zFront + 0.6;
-  // aligned exactly with the building's own width so no pole or bar ever
-  // projects past the sides of the house
-  const xStart = -(W/2 + GW);
-  const xEnd = W/2;
-  const bays = Math.round((xEnd-xStart)/1.7);
-  const bayW = (xEnd-xStart)/bays;
-  const levels = [0.04, 1.15, 2.26, 3.37];
-  const topH = levels[levels.length-1] + 0.95;
-
-  for(let i=0;i<=bays;i++){
-    const x = xStart + i*bayW;
-    scPole(x, 0, zFront, topH);
-    scPole(x, 0, zBack, topH);
-  }
-  levels.forEach((y)=>{
-    for(let i=0;i<bays;i++){
-      const x0 = xStart+i*bayW, x1 = xStart+(i+1)*bayW;
-      scBar(x0,y,zFront, x1,zFront);
-      scBar(x0,y,zBack, x1,zBack);
-    }
-    // cross braces along the front row, so the frame still reads as a
-    // properly built structure once the platform boards are gone
-    for(let i=0;i<bays;i++){
-      const x0 = xStart+i*bayW, x1 = xStart+(i+1)*bayW;
-      scBar(x0,y,zFront, x1,zBack);
-    }
+  /* ---------- Resize ---------- */
+  window.addEventListener('resize', function () {
+    sizeCanvas();
+    sizeParticles();
+    drawFrame(Math.max(0, lastDrawn));
   });
 })();
-
-function setScaffoldProgress(p){
-  const clamped = Math.max(0, Math.min(1, p));
-  scaffoldMats.forEach(m=>{ m.opacity = clamped; });
-  scaffoldGroup.visible = clamped > 0.01;
-  scaffoldGroup.scale.y = THREE.MathUtils.lerp(0.4, 1, clamped);
-}
-setScaffoldProgress(0);
-
-// ---------- soffit + gutters + downspouts ("podbitka i rury spadowe") ----------
-// its own stage, with a staged install animation: soffit boards close up
-// first, then the gutter run appears, then each downspout extends down
-// from the eave to the ground, one after another.
-const finishingGroup = new THREE.Group();
-house.add(finishingGroup);
-
-const soffitMat = new THREE.MeshStandardMaterial({color:0xe7e2d3, roughness:0.7, transparent:true, opacity:0});
-const gutterMat = new THREE.MeshStandardMaterial({color:0x9aa0a6, roughness:0.4, metalness:0.5, transparent:true, opacity:0});
-const downspoutMat = new THREE.MeshStandardMaterial({color:0x9aa0a6, roughness:0.4, metalness:0.5});
-const soffitMats = [soffitMat];
-const gutterMats = [gutterMat];
-const downspoutMeshes = [];
-
-function addSoffitRing(cx, cz, hw, hd, overhang, y){
-  // four thin boards closing the underside of the roof overhang, forming a
-  // frame around the building at eave height
-  const t = 0.03;
-  const front = new THREE.Mesh(new THREE.BoxGeometry(hw*2+overhang*2, t, overhang), soffitMat);
-  front.position.set(cx, y, cz + hd + overhang/2);
-  const back = front.clone(); back.position.z = cz - hd - overhang/2;
-  const side = new THREE.Mesh(new THREE.BoxGeometry(overhang, t, hd*2+overhang*2), soffitMat);
-  side.position.set(cx + hw + overhang/2, y, cz);
-  const side2 = side.clone(); side2.position.x = cx - hw - overhang/2;
-  [front, back, side, side2].forEach(m=>finishingGroup.add(m));
-}
-addSoffitRing(0, 0, W/2, D/2, 0.35, WH);
-addSoffitRing(garageX, 0, GW/2, GD/2, 0.3, G_LOW);
-
-function addGutterRun(x0,z0,x1,z1,y){
-  const dx=x1-x0, dz=z1-z0, len=Math.sqrt(dx*dx+dz*dz);
-  const m = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,len,8), gutterMat);
-  m.position.set((x0+x1)/2, y, (z0+z1)/2);
-  m.rotation.z = Math.PI/2;
-  m.rotation.y = -Math.atan2(dz,dx);
-  finishingGroup.add(m);
-}
-// gutters along the two long eaves of the main house, and along the
-// garage's own front eave
-addGutterRun(-(W/2+0.4), D/2+0.35, (W/2+0.4), D/2+0.35, WH-0.05);
-addGutterRun(-(W/2+0.4), -D/2-0.35, (W/2+0.4), -D/2-0.35, WH-0.05);
-addGutterRun(garageX-(GW/2+0.35), D/2+0.3, garageX+(GW/2+0.35), D/2+0.3, G_LOW-0.05);
-
-function addDownspout(x,z,topY){
-  const h = topY; // runs all the way down to the ground (y=0)
-  const geo = new THREE.CylinderGeometry(0.045,0.045,h,8);
-  geo.translate(0,-h/2,0); // pivot at the top so scale.y grows downward
-  const m = new THREE.Mesh(geo, downspoutMat);
-  m.position.set(x, topY, z);
-  m.scale.y = 0;
-  finishingGroup.add(m);
-  downspoutMeshes.push(m);
-}
-addDownspout(-(W/2+0.02), D/2+0.32, WH-0.05);
-addDownspout(W/2+0.02, D/2+0.32, WH-0.05);
-addDownspout(garageX-(GW/2+0.02), D/2+0.28, G_LOW-0.05);
-
-function setFinishingProgress(p){
-  const t = THREE.MathUtils.clamp(p,0,1);
-  const soffitT = THREE.MathUtils.clamp(t/0.35, 0, 1);
-  const gutterT = THREE.MathUtils.clamp((t-0.25)/0.35, 0, 1);
-  soffitMats.forEach(m=>{ m.opacity = soffitT; });
-  gutterMats.forEach(m=>{ m.opacity = gutterT; });
-  downspoutMeshes.forEach((m,i)=>{
-    const start = 0.45 + i*0.12;
-    m.scale.y = THREE.MathUtils.clamp((t-start)/0.35, 0, 1);
-  });
-  finishingGroup.visible = t > 0.001;
-}
-setFinishingProgress(0);
-
-function setSillsProgress(p){
-  const t = THREE.MathUtils.clamp(p,0,1);
-  sillMats.forEach(m=>{ m.opacity = t; });
-  sillMeshes.forEach((m,i)=>{
-    const start = i*0.08;
-    const local = THREE.MathUtils.clamp((t-start)/0.6, 0, 1);
-    const eased = 1 - Math.pow(1-local, 3);
-    m.position.y = m.userData.baseY + (1-eased) * 0.18;
-  });
-}
-setSillsProgress(0);
-
-// ambient particles
-const PCOUNT = 260;
-const pGeo = new THREE.BufferGeometry();
-const pPos = new Float32Array(PCOUNT*3);
-for(let i=0;i<PCOUNT;i++){
-  pPos[i*3]   = (Math.random()-0.5)*30;
-  pPos[i*3+1] = Math.random()*8+0.2;
-  pPos[i*3+2] = (Math.random()-0.5)*30;
-}
-pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
-const pMat = new THREE.PointsMaterial({color:0xe2c98a, size:0.03, transparent:true, opacity:0.5});
-const particles = new THREE.Points(pGeo, pMat);
-scene.add(particles);
-
-/* =========================================================
-   SCROLL-DRIVEN STATE
-   ========================================================= */
-let processProgress = 0;
-let currentStageIndex = -1;
-
-// build rail + stage cards DOM
-const rail = document.getElementById('rail');
-const cardsWrap = document.getElementById('stage-cards');
-stageDefs.forEach((s,i)=>{
-  const r = document.createElement('div');
-  r.className='rail-item'; r.dataset.i=i;
-  r.innerHTML = `<span class="rail-num">${s.label}</span><span class="rail-dot"></span>`;
-  rail.appendChild(r);
-
-  const card = document.createElement('div');
-  card.className='stage-card glass'; card.dataset.i=i;
-  card.innerHTML = `
-    <div class="eyebrow">Etap ${s.label} / ${String(stageDefs.length).padStart(2,'0')}</div>
-    <h3>${s.title}</h3>
-    <p>${s.text}</p>
-    <div class="stage-chips">${s.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
-  `;
-  cardsWrap.appendChild(card);
-});
-
-function makeTiledTex(canvas){
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(2,1);
-  return tex;
-}
-
-function setStage(idx){
-  if(idx===currentStageIndex) return;
-  currentStageIndex = idx;
-  document.querySelectorAll('.rail-item').forEach(el=>el.classList.toggle('active', +el.dataset.i===idx));
-  document.querySelectorAll('.stage-card').forEach(el=>el.classList.toggle('active', +el.dataset.i===idx));
-
-  const stage = stageDefs[idx];
-  const total = stageDefs.length;
-
-  if(stage.holdUntilOwnStage){
-    // this stage introduces an element (e.g. dowels) that must NOT leak into
-    // the previous stage. The previous stage stays clean right up until the
-    // transition, then THIS stage's own material — dowels included — is
-    // applied across the entire surface all at once, the moment this stage
-    // begins. No partial/bottom-only reveal for this stage.
-    wallTexture = makeTiledTex(stage.tex());
-    wallMat.map = wallTexture;
-    wallMat.needsUpdate = true;
-
-    overlays.forEach(o=>{ o.mesh.visible = false; });
-    revealActive = false;
-    return;
-  }
-
-  // base layer: this stage's material, fully applied
-  wallTexture = makeTiledTex(stage.tex());
-  wallMat.map = wallTexture;
-  wallMat.needsUpdate = true;
-
-  // overlay: the NEXT stage's material, masked so it appears progressively
-  // (board by board / course by course) as the person scrolls through —
-  // unless the next stage handles its own reveal (holdUntilOwnStage), in
-  // which case it must stay fully hidden until its own stage begins.
-  const nextIdx = Math.min(idx+1, total-1);
-  const target = stageDefs[nextIdx];
-  if(nextIdx===idx || target.sameTex || target.holdUntilOwnStage){
-    overlays.forEach(o=>o.mesh.visible=false);
-    revealActive = false;
-  }else{
-    const overlayTex = makeTiledTex(target.tex());
-    const maskTex = makeTiledTex(makeRankMask(target.revealRows||12, target.revealJitter??0.08));
-    overlays.forEach(o=>{
-      o.mat.map = overlayTex;
-      o.mat.alphaMap = maskTex;
-      o.mat.alphaTest = 0.98;
-      o.mat.needsUpdate = true;
-      o.mesh.visible = true;
-    });
-    revealActive = true;
-  }
-}
-setStage(0);
-
-function updateReveal(t){
-  if(!revealActive) return;
-  const at = THREE.MathUtils.clamp(1-t, 0.02, 0.97);
-  overlays.forEach(o=>{ o.mat.alphaTest = at; });
-}
-
-// hex to three color helper
-function col(hex){ return new THREE.Color(hex); }
-
-/* ---------- process ScrollTrigger ---------- */
-const processST = ScrollTrigger.create({
-  trigger:'#process',
-  start:'top top',
-  end:'bottom bottom',
-  scrub: reduceMotion ? false : 0.6,
-  onUpdate(self){
-    processProgress = self.progress;
-    const total = stageDefs.length;
-    const raw = processProgress * (total-1);
-    const idx = Math.min(Math.floor(raw), total-1);
-    const t = raw - idx;
-    setStage(idx);
-    updateReveal(t);
-
-
-    const a = stageDefs[idx].cam, b = stageDefs[Math.min(idx+1,total-1)].cam;
-    const px = THREE.MathUtils.lerp(a.p[0], b.p[0], t);
-    const py = THREE.MathUtils.lerp(a.p[1], b.p[1], t);
-    const pz = THREE.MathUtils.lerp(a.p[2], b.p[2], t);
-    const lx = THREE.MathUtils.lerp(a.l[0], b.l[0], t);
-    const ly = THREE.MathUtils.lerp(a.l[1], b.l[1], t);
-    const lz = THREE.MathUtils.lerp(a.l[2], b.l[2], t);
-    lastCamRaw.x = px; lastCamRaw.y = py; lastCamRaw.z = pz;
-    lookTarget.set(lx, ly, lz);
-    camera.position.set(
-      lx + (px-lx)*camScale,
-      ly + (py-ly)*camScale,
-      lz + (pz-lz)*camScale
-    );
-
-    // ground / sky lerp (grass grows in late in the sequence)
-    const gA = col(stageDefs[idx].ground), gB = col(stageDefs[Math.min(idx+1,total-1)].ground);
-    const gc = gA.clone().lerp(gB, t);
-    groundMat.color.copy(gc);
-    const sA = col(stageDefs[idx].sky), sB = col(stageDefs[Math.min(idx+1,total-1)].sky);
-    const sc = sA.clone().lerp(sB, t);
-    scene.background = sc;
-    scene.fog.color = sc;
-
-    const warmth = processProgress; // 0 overcast -> 1 golden
-    sun.intensity = THREE.MathUtils.lerp(0.7, 1.15, warmth);
-    sun.color = new THREE.Color().lerpColors(new THREE.Color(0xffffff), new THREE.Color(0xffd9a0), warmth);
-    ambient.intensity = THREE.MathUtils.lerp(0.7, 0.5, warmth);
-
-    // scaffolding: rises going into stage 2 (label 02), stands through the
-    // facade work, then is struck while leaving the last plaster stage
-    let scaffoldOpacity;
-    if(idx <= 0){ scaffoldOpacity = t; }
-    else if(idx >= 1 && idx <= 6){ scaffoldOpacity = 1; }
-    else if(idx === 7){ scaffoldOpacity = 1 - t; }
-    else { scaffoldOpacity = 0; }
-    setScaffoldProgress(scaffoldOpacity);
-
-    // window sills: installed during their own dedicated stage (09), then
-    // stay settled in place for every stage after it
-    const sillsIdx = 8;
-    let sillsProgress;
-    if(idx < sillsIdx){ sillsProgress = 0; }
-    else if(idx === sillsIdx){ sillsProgress = t; }
-    else { sillsProgress = 1; }
-    setSillsProgress(sillsProgress);
-
-    // soffit + gutters + downspouts: installed during their own dedicated
-    // stage (10), then stay in place for every stage after it
-    const finishingIdx = 9;
-    let finishingProgress;
-    if(idx < finishingIdx){ finishingProgress = 0; }
-    else if(idx === finishingIdx){ finishingProgress = t; }
-    else { finishingProgress = 1; }
-    setFinishingProgress(finishingProgress);
-  }
-});
-
-/* ---------- play button: auto-advance through the whole process ---------- */
-(function(){
-  const playBtn = document.getElementById('playBtn');
-  if(!playBtn) return;
-  const iconEl = playBtn.querySelector('.play-btn-icon');
-  const labelEl = playBtn.querySelector('.play-btn-label');
-  const secondsPerStage = 2.5; // ~2-3s per stage, enough time to read the card
-  let playTween = null;
-
-  function setIdle(){
-    playBtn.classList.remove('is-playing');
-    iconEl.textContent = '▶';
-    labelEl.textContent = 'Odtwórz proces';
-    document.documentElement.style.scrollBehavior = '';
-  }
-  function setPlaying(){
-    playBtn.classList.add('is-playing');
-    iconEl.textContent = '❚❚';
-    labelEl.textContent = 'Zatrzymaj';
-    // disable CSS smooth-scroll while autoplay drives the scroll itself —
-    // otherwise the browser tries to smooth-interpolate every single frame
-    // GSAP sets, fighting the animation and making it look jittery instead
-    // of fluid.
-    document.documentElement.style.scrollBehavior = 'auto';
-  }
-  function stopPlayback(){
-    if(playTween){ playTween.kill(); playTween = null; }
-    setIdle();
-  }
-
-  function startPlayback(){
-    const start = processST.start;
-    const end = processST.end;
-    const total = stageDefs.length;
-    const proxy = {y: window.scrollY};
-    setPlaying();
-
-    playTween = gsap.timeline({
-      onComplete: setIdle,
-      onInterrupt: setIdle
-    })
-    // ease into the start of the process section first
-    .to(proxy, {
-      y: start, duration: 0.9, ease:'power2.inOut',
-      onUpdate:()=>processST.scroll(proxy.y)
-    })
-    // then glide through every stage at an even, readable pace
-    .to(proxy, {
-      y: end, duration: (total-1)*secondsPerStage, ease:'none',
-      onUpdate:()=>processST.scroll(proxy.y)
-    });
-  }
-
-  playBtn.addEventListener('click', ()=>{
-    if(playTween){ stopPlayback(); }
-    else { startPlayback(); }
-  });
-
-  // any manual scroll/touch/wheel input from the user cancels autoplay so it
-  // never fights their own scrolling
-  ['wheel','touchstart','keydown'].forEach(evt=>{
-    window.addEventListener(evt, ()=>{ if(playTween) stopPlayback(); }, {passive:true});
-  });
-})();
-
-/* ---------- fade canvas behind footer ---------- */
-ScrollTrigger.create({
-  trigger:'footer',
-  start:'top bottom',
-  end:'top 40%',
-  scrub:true,
-  onUpdate(self){ canvas.style.opacity = 1 - self.progress; }
-});
-
-/* =========================================================
-   RENDER LOOP
-   ========================================================= */
-const clock = new THREE.Clock();
-function animate(){
-  requestAnimationFrame(animate);
-  const t = clock.getElapsedTime();
-
-  camera.position.y += Math.sin(t*0.6)*0.0015;
-  camera.lookAt(lookTarget);
-
-  particles.rotation.y = t*0.02;
-
-  renderer.render(scene, camera);
-}
-animate();
-
-window.addEventListener('resize', ()=>{
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  camScale = computeCamScale();
-  camera.position.set(
-    lookTarget.x + (lastCamRaw.x-lookTarget.x)*camScale,
-    lookTarget.y + (lastCamRaw.y-lookTarget.y)*camScale,
-    lookTarget.z + (lastCamRaw.z-lookTarget.z)*camScale
-  );
-});
-
-/* =========================================================
-   PRELOADER + INTRO
-   ========================================================= */
-window.addEventListener('load', ()=>{
-  gsap.to('#pl-fill', {width:'100%', duration:1.1, ease:'power2.inOut'});
-  gsap.delayedCall(1.2, ()=>{
-    document.getElementById('preloader').classList.add('hide');
-    gsap.from('.hero-inner .eyebrow, .hero-inner h1, .hero-sub', {
-      y:26, opacity:0, duration:1, ease:'power3.out', stagger:0.12
-    });
-  });
-  ScrollTrigger.refresh();
-});
 </script>
 </body>
 </html>
