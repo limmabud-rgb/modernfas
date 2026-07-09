@@ -550,6 +550,7 @@ form.quote button {
   cursor: pointer; transition: box-shadow .3s ease, transform .3s ease;
 }
 form.quote button:hover { box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
+form.quote button:disabled { opacity: .6; cursor: default; transform: none; box-shadow: none; }
 form.quote .consent { display: flex; gap: 11px; align-items: flex-start; margin-bottom: 20px; }
 form.quote .consent input { width: 16px; height: 16px; flex: none; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
 form.quote .consent label { margin: 0; font-size: 11px; letter-spacing: 0; text-transform: none; line-height: 1.65; color: var(--concrete-dim); }
@@ -875,7 +876,7 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
         <label for="consent">Wyrażam zgodę na przetwarzanie moich danych osobowych (imię, telefon, lokalizacja) przez Modernfas w celu przygotowania i przedstawienia oferty. <a href="polityka-prywatnosci.html" target="_blank" rel="noopener">Polityka prywatności</a>. <span class="req">*</span></label>
       </div>
       <button type="submit">Wyślij zapytanie</button>
-      <div class="note">Klikając „Wyślij", otworzysz swój program pocztowy z gotową treścią do wysłania na nasz adres. Wolisz szybciej? Zadzwoń: <a href="tel:+48516472845">516 472 845</a>.</div>
+      <div class="note">Zgłoszenie wysyłamy bezpośrednio ze strony — nie musisz otwierać poczty. Wolisz szybciej? Zadzwoń: <a href="tel:+48516472845">516 472 845</a>.</div>
       <div class="status"></div>
     </form>
   </div>
@@ -1292,13 +1293,17 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
   }, { threshold: 0.12 });
   Array.prototype.slice.call(document.querySelectorAll('.reveal-up')).forEach(function (el) { ruObs.observe(el); });
 
-  /* ---------- Quote form ---------- */
-  /* Domyślnie wysyłka otwiera program pocztowy użytkownika (działa bez serwera,
-     idealne pod hosting statyczny na Vercel). Aby odbierać zgłoszenia prosto na
-     skrzynkę bez otwierania poczty: załóż darmowe konto na formspree.io i zamień
-     blok mailto poniżej na:
-       fetch('https://formspree.io/f/TWOJE_ID', { method: 'POST',
-         headers: { 'Accept': 'application/json' }, body: new FormData(qform) }); */
+  /* ---------- Quote form — wysyłka przez stronę (bez poczty) ---------- */
+  /* Zgłoszenia wysyłane są bezpośrednio ze strony (AJAX) i trafiają na Twoją
+     skrzynkę e-mail. Usługa: Web3Forms — darmowa, bez zakładania konta.
+     KONFIGURACJA (jednorazowo, ok. 1 min):
+       1. Wejdź na https://web3forms.com
+       2. Podaj adres modernfas1@gmail.com i odbierz darmowy "Access Key"
+       3. Wklej go poniżej w miejsce wartości WEB3FORMS_KEY.
+     Dopóki klucz nie zostanie ustawiony, formularz awaryjnie użyje poczty e-mail,
+     żeby nigdy nie był "martwy". */
+  var WEB3FORMS_KEY = 'WKLEJ-TUTAJ-DARMOWY-KLUCZ-WEB3FORMS';
+
   var qform = document.getElementById('quote-form');
   if (qform) {
     qform.addEventListener('submit', function (e) {
@@ -1307,6 +1312,8 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
       var name = val('name'), phone = val('phone'), loc = val('location'), msg = val('message');
       var consent = qform.querySelector('[name="consent"]');
       var status = qform.querySelector('.status');
+      var btn = qform.querySelector('button[type="submit"]');
+
       if (!name || !phone || !loc) {
         status.className = 'status err';
         status.textContent = 'Uzupełnij imię, telefon i lokalizację.';
@@ -1317,12 +1324,51 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
         status.textContent = 'Zaznacz zgodę na przetwarzanie danych, abyśmy mogli przygotować ofertę.';
         return;
       }
-      var subject = 'Zapytanie o wycenę — ' + name + ' (' + loc + ')';
-      var body = 'Imię: ' + name + '\nTelefon: ' + phone + '\nLokalizacja: ' + loc + '\n\nWiadomość:\n' + (msg || '—');
-      window.location.href = 'mailto:modernfas1@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-      status.className = 'status ok';
-      status.textContent = 'Dziękujemy! Otworzyliśmy wiadomość w Twoim programie pocztowym — wyślij ją, a oddzwonimy. Jeśli okno się nie pojawiło, zadzwoń: 516 472 845.';
-      qform.reset();
+
+      // Awaryjnie: dopóki nie wklejono klucza Web3Forms — użyj poczty e-mail.
+      if (WEB3FORMS_KEY.indexOf('WKLEJ') === 0) {
+        var subject = 'Zapytanie o wycenę — ' + name + ' (' + loc + ')';
+        var body = 'Imię: ' + name + '\nTelefon: ' + phone + '\nLokalizacja: ' + loc + '\n\nWiadomość:\n' + (msg || '—');
+        window.location.href = 'mailto:modernfas1@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        status.className = 'status ok';
+        status.textContent = 'Otworzyliśmy wiadomość w programie pocztowym. Aby formularz wysyłał się bez poczty, ustaw darmowy klucz Web3Forms (instrukcja w kodzie).';
+        return;
+      }
+
+      var payload = new FormData();
+      payload.append('access_key', 1fee784f-6bd8-4ee8-8efe-2be6d41c3d3e);
+      payload.append('subject', 'Zapytanie o wycenę — ' + name + ' (' + loc + ')');
+      payload.append('from_name', 'Formularz Modernfas');
+      payload.append('Imię', name);
+      payload.append('Telefon', phone);
+      payload.append('Lokalizacja', loc);
+      payload.append('Wiadomość', msg || '—');
+      payload.append('Zgoda RODO', 'TAK');
+      payload.append('botcheck', ''); // honeypot antyspamowy
+
+      var label = btn ? btn.textContent : '';
+      if (btn) { btn.disabled = true; btn.textContent = 'Wysyłanie…'; }
+      status.className = 'status'; status.textContent = '';
+
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST', headers: { 'Accept': 'application/json' }, body: payload
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (btn) { btn.disabled = false; btn.textContent = label; }
+        if (data && data.success) {
+          status.className = 'status ok';
+          status.textContent = 'Dziękujemy! Zgłoszenie zostało wysłane — odezwiemy się najszybciej, jak to możliwe.';
+          qform.reset();
+        } else {
+          throw new Error('send failed');
+        }
+      })
+      .catch(function () {
+        if (btn) { btn.disabled = false; btn.textContent = label; }
+        status.className = 'status err';
+        status.textContent = 'Nie udało się wysłać formularza. Zadzwoń: 516 472 845 lub napisz: modernfas1@gmail.com.';
+      });
     });
   }
 
