@@ -1302,7 +1302,7 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
        3. Wklej go poniżej w miejsce wartości WEB3FORMS_KEY.
      Dopóki klucz nie zostanie ustawiony, formularz awaryjnie użyje poczty e-mail,
      żeby nigdy nie był "martwy". */
-  var WEB3FORMS_KEY = 'WKLEJ-TUTAJ-DARMOWY-KLUCZ-WEB3FORMS';
+  var WEB3FORMS_KEY = '1fee784f-6bd8-4ee8-8efe-2be6d41c3d3e';
 
   var qform = document.getElementById('quote-form');
   if (qform) {
@@ -1325,8 +1325,8 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
         return;
       }
 
-      // Awaryjnie: dopóki nie wklejono klucza Web3Forms — użyj poczty e-mail.
-      if (WEB3FORMS_KEY.indexOf('WKLEJ') === 0) {
+      // Awaryjnie: jeśli klucz nie jest poprawnym kluczem Web3Forms (UUID) — użyj poczty e-mail.
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(WEB3FORMS_KEY)) {
         var subject = 'Zapytanie o wycenę — ' + name + ' (' + loc + ')';
         var body = 'Imię: ' + name + '\nTelefon: ' + phone + '\nLokalizacja: ' + loc + '\n\nWiadomość:\n' + (msg || '—');
         window.location.href = 'mailto:modernfas1@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
@@ -1336,7 +1336,7 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
       }
 
       var payload = new FormData();
-      payload.append('access_key', 1fee784f-6bd8-4ee8-8efe-2be6d41c3d3e);
+      payload.append('access_key', WEB3FORMS_KEY);
       payload.append('subject', 'Zapytanie o wycenę — ' + name + ' (' + loc + ')');
       payload.append('from_name', 'Formularz Modernfas');
       payload.append('Imię', name);
