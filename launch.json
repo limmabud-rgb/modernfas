@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "modernfas",
+      "runtimeExecutable": "C:\\Users\\rmarm\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "runtimeArgs": ["-m", "http.server", "8080", "-d", "animated-sites/modernfas"],
+      "port": 8080
+    }
+  ]
+}

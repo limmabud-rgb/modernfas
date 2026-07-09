@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__b982057a-1db6-4ea7-8eca-9d51b134a140__media_upload_widget",
+      "mcp__b982057a-1db6-4ea7-8eca-9d51b134a140__models_explore"
+    ]
+  }
+}
