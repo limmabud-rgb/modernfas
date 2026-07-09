@@ -1,0 +1,9 @@
+{
+  "source": "modern.mp4",
+  "video": { "duration": 11.041667, "fps": 24, "width": 1136, "height": 808, "totalFrames": 265 },
+  "frames": 144,
+  "desktop": { "width": 1136, "height": 808, "quality": 45, "sizeMB": 8.28, "dir": "desktop" },
+  "mobile": { "width": 568, "height": 404, "quality": 68, "sizeMB": 4.53, "dir": "mobile" },
+  "scrollHeight": "650vh",
+  "pattern": "frame-%04d.webp"
+}

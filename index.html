@@ -3,8 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MODERNFAS — Ocieplenia elewacji warstwa po warstwie</title>
-<meta name="description" content="Zobacz, jak dom rozkłada się do surowej ściany i wraca do życia — etap po etapie systemu ociepleń ETICS. Modernfas: grafitowy styropian, precyzyjny montaż, gwarancja.">
+<title>Modernfas — Ocieplenia elewacji ETICS w całej Polsce | Elewacje, które oddychają ciepłem</title>
+<meta name="description" content="Modernfas — ocieplenia elewacji w systemie ETICS od 2011 roku. Grafitowy styropian, precyzyjny montaż, systemy Weber, 10 lat gwarancji. Bezpłatna wycena w 48 godzin. Realizacje w całej Polsce.">
+<meta name="keywords" content="ocieplenia elewacji, ETICS, styropian grafitowy, termomodernizacja, elewacje, tynk elewacyjny, Weber, ocieplanie domów, docieplenie">
+<meta name="author" content="Modernfas">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0e0d0c">
+<link rel="canonical" href="https://modernfas.vercel.app/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:site_name" content="Modernfas">
+<meta property="og:url" content="https://modernfas.vercel.app/">
+<meta property="og:title" content="Modernfas — Ocieplenia elewacji ETICS w całej Polsce">
+<meta property="og:description" content="Ocieplenia elewacji w systemie ETICS od 2011 roku. Grafitowy styropian, systemy Weber, 10 lat gwarancji. Bezpłatna wycena w 48 godzin.">
+<meta property="og:image" content="https://modernfas.vercel.app/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nowoczesny dom po ociepleniu elewacji — realizacja Modernfas">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Modernfas — Ocieplenia elewacji ETICS w całej Polsce">
+<meta name="twitter:description" content="Ocieplenia elewacji w systemie ETICS od 2011 roku. Grafitowy styropian, systemy Weber, 10 lat gwarancji.">
+<meta name="twitter:image" content="https://modernfas.vercel.app/og-image.jpg">
+
+<!-- Favicon -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<!-- Dane strukturalne — LocalBusiness (schema.org) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HomeAndConstructionBusiness",
+  "name": "Modernfas",
+  "description": "Ocieplenia elewacji w systemie ETICS od 2011 roku. Grafitowy styropian, systemy Weber, precyzyjny montaż, 10 lat gwarancji.",
+  "image": "https://modernfas.vercel.app/og-image.jpg",
+  "url": "https://modernfas.vercel.app/",
+  "telephone": "+48516472845",
+  "email": "modernfas1@gmail.com",
+  "foundingDate": "2011",
+  "slogan": "Elewacje, które oddychają ciepłem",
+  "priceRange": "$$",
+  "areaServed": { "@type": "Country", "name": "Polska" },
+  "knowsLanguage": "pl",
+  "makesOffer": [
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ocieplenie elewacji w systemie ETICS" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Termomodernizacja budynków" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Tynki elewacyjne i kolorystyka" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Bezpłatny obmiar i wycena" } }
+  ]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
@@ -326,6 +378,190 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
   .stext, .stext.visible { transition: opacity .4s ease; filter: none; transform: none; }
   #s-hero .scroll-hint .ln i { animation: none; }
 }
+
+/* =========================================================
+   NAWIGACJA GÓRNA
+   ========================================================= */
+#topnav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 70;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 6%;
+  transform: translateY(-100%);
+  transition: background .5s ease, padding .4s ease, transform .5s ease, border-color .5s ease;
+  border-bottom: 1px solid transparent;
+}
+#topnav.show { transform: translateY(0); }
+#topnav.solid {
+  background: rgba(14, 13, 12, 0.78);
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+  padding: 12px 6%; border-bottom: 1px solid rgba(244, 240, 234, 0.06);
+}
+#topnav .logo {
+  font-family: var(--heading); font-weight: 300; letter-spacing: .3em;
+  font-size: 16px; text-transform: uppercase; color: var(--warm-white);
+  text-decoration: none; padding-left: .3em;
+}
+#topnav .links { display: flex; align-items: center; gap: 26px; }
+#topnav .links a {
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--warm-white-dim); text-decoration: none; transition: color .3s ease;
+}
+#topnav .links a:hover { color: var(--accent); }
+#topnav .links a.nav-cta {
+  color: var(--accent); border: 1px solid rgba(207, 138, 63, 0.5); padding: 9px 16px;
+}
+#topnav .links a.nav-cta:hover { background: var(--accent); color: var(--ink); }
+.burger { display: none; width: 26px; height: 15px; position: relative; background: none; border: none; padding: 0; cursor: pointer; }
+.burger span { position: absolute; left: 0; width: 100%; height: 1.5px; background: var(--warm-white); transition: all .3s ease; }
+.burger span:nth-child(1) { top: 0; } .burger span:nth-child(2) { top: 6.5px; } .burger span:nth-child(3) { top: 13px; }
+#mobile-menu {
+  position: fixed; inset: 0; z-index: 95; background: rgba(14, 13, 12, 0.97);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  opacity: 0; visibility: hidden; transition: opacity .4s ease, visibility 0s linear .4s;
+}
+#mobile-menu.open { opacity: 1; visibility: visible; transition: opacity .4s ease; }
+#mobile-menu a { font-family: var(--heading); font-weight: 300; font-size: 24px; letter-spacing: .08em; color: var(--warm-white); text-decoration: none; }
+#mobile-menu a:hover { color: var(--accent); }
+#mobile-menu .mclose { position: absolute; top: 20px; right: 26px; font-size: 32px; line-height: 1; color: var(--warm-white); background: none; border: none; cursor: pointer; }
+@media (max-width: 860px) { #topnav .links { display: none; } .burger { display: block; } }
+
+/* =========================================================
+   PŁYWAJĄCY PRZYCISK — ZADZWOŃ / WYCEŃ
+   ========================================================= */
+#float-cta {
+  position: fixed; right: 22px; bottom: 24px; z-index: 88;
+  display: flex; flex-direction: column; gap: 10px;
+  opacity: 0; visibility: hidden; transform: translateY(12px);
+  transition: opacity .5s ease, transform .5s ease, visibility 0s linear .5s;
+}
+#float-cta.show { opacity: 1; visibility: visible; transform: translateY(0); transition: opacity .5s ease, transform .5s ease; }
+#float-cta a {
+  display: flex; align-items: center; gap: 9px; padding: 13px 20px; border-radius: 44px;
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600;
+  text-decoration: none; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+#float-cta a:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55); }
+#float-cta .fc-call {
+  background: rgba(14, 13, 12, 0.82); color: var(--warm-white);
+  border: 1px solid rgba(244, 240, 234, 0.22);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+#float-cta .fc-quote { background: var(--accent); color: var(--ink); }
+#float-cta svg { width: 14px; height: 14px; flex: none; }
+@media (max-width: 768px) { #float-cta { right: 14px; bottom: 16px; } #float-cta a { padding: 12px 16px; } }
+
+/* =========================================================
+   WSPÓLNE SEKCJE (O nas / Opinie / Certyfikaty / Kontakt)
+   ========================================================= */
+.section { position: relative; z-index: 20; padding: 110px 6%; }
+.section .head { max-width: 620px; margin: 0 auto 54px; text-align: center; }
+.reveal-up { opacity: 0; transform: translateY(30px); transition: opacity .9s ease, transform .9s ease; }
+.reveal-up.in { opacity: 1; transform: translateY(0); }
+#about, #gallery, #opinie, #certyfikaty, #kontakt { scroll-margin-top: 76px; }
+
+/* clickable contact links inside animation CTA + footer */
+#s-cta .cdet a, footer .flegal a { color: inherit; text-decoration: none; transition: color .3s ease; }
+#s-cta .cdet a:hover, footer .flegal a:hover { color: var(--accent); }
+
+/* keep native text caret in form fields despite custom cursor */
+input, textarea { cursor: text; }
+
+/* ---------- O NAS ---------- */
+#about { background: var(--charcoal); }
+#about .wrap { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; }
+#about .txt h2 { font-family: var(--heading); font-weight: 300; font-size: clamp(28px, 3.2vw, 42px); line-height: 1.15; margin-bottom: 20px; }
+#about .txt h2 i { font-style: italic; color: var(--warm-white-dim); }
+#about .txt p { font-size: 14px; line-height: 1.9; color: var(--warm-white-dim); margin-bottom: 16px; max-width: 54ch; }
+#about .mini { display: flex; gap: 34px; margin-top: 28px; }
+#about .mini .n { font-family: var(--heading); font-size: 28px; color: var(--warm-white); }
+#about .mini .n em { font-style: normal; font-size: .6em; color: var(--accent); }
+#about .mini .c { font-size: 8px; letter-spacing: .24em; text-transform: uppercase; color: var(--concrete-dim); margin-top: 5px; }
+#about .photo {
+  aspect-ratio: 4 / 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  background: rgba(244, 240, 234, 0.025); border: 1px dashed rgba(244, 240, 234, 0.14);
+}
+#about .photo .ph-ico { font-size: 20px; color: var(--accent); opacity: .7; }
+#about .photo .ph-txt { font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--concrete-dim); text-align: center; line-height: 2; }
+@media (max-width: 820px) { #about .wrap { grid-template-columns: 1fr; gap: 36px; } #about .photo { aspect-ratio: 16 / 10; max-width: 440px; } }
+
+/* ---------- OPINIE ---------- */
+#opinie { background: var(--ink); }
+#opinie .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1120px; margin: 0 auto; }
+.tcard {
+  background: rgba(244, 240, 234, 0.03); border: 1px solid rgba(244, 240, 234, 0.07);
+  padding: 28px 26px; display: flex; flex-direction: column; gap: 14px;
+  transition: border-color .4s ease, background .4s ease;
+}
+.tcard:hover { border-color: rgba(207, 138, 63, 0.3); background: rgba(244, 240, 234, 0.05); }
+.tcard .stars { color: var(--accent); letter-spacing: 3px; font-size: 13px; }
+.tcard .ttext { font-family: var(--heading); font-style: italic; font-weight: 300; font-size: 16px; line-height: 1.6; color: var(--warm-white); }
+.tcard .tmeta { margin-top: auto; display: flex; flex-direction: column; gap: 3px; }
+.tcard .tname { font-size: 12px; font-weight: 600; letter-spacing: .04em; }
+.tcard .tloc { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--concrete-dim); }
+@media (max-width: 860px) { #opinie .grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { #opinie .grid { grid-template-columns: 1fr; } }
+
+/* ---------- CERTYFIKATY / WEBER ---------- */
+#certyfikaty { background: var(--charcoal); }
+#certyfikaty .lead { max-width: 660px; margin: 0 auto 46px; text-align: center; font-size: 14px; line-height: 1.9; color: var(--warm-white-dim); }
+#certyfikaty .cgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1120px; margin: 0 auto; }
+.ccard { background: rgba(244, 240, 234, 0.03); border: 1px solid rgba(244, 240, 234, 0.07); padding: 30px 24px; transition: border-color .4s ease, transform .4s ease; }
+.ccard:hover { border-color: rgba(207, 138, 63, 0.3); transform: translateY(-3px); }
+.ccard .ci { font-family: var(--heading); font-size: 24px; color: var(--accent); margin-bottom: 14px; }
+.ccard h3 { font-size: 13px; font-weight: 600; letter-spacing: .04em; margin-bottom: 8px; }
+.ccard p { font-size: 12px; line-height: 1.7; color: var(--concrete-dim); }
+.cbadge {
+  max-width: 1120px; margin: 22px auto 0; padding: 22px 26px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(207, 138, 63, 0.06); border: 1px solid rgba(207, 138, 63, 0.2);
+}
+.cbadge .bt { font-size: 12.5px; line-height: 1.75; color: var(--warm-white-dim); text-align: center; max-width: 780px; }
+.cbadge .bt b { color: var(--warm-white); font-weight: 600; }
+@media (max-width: 920px) { #certyfikaty .cgrid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { #certyfikaty .cgrid { grid-template-columns: 1fr; } }
+
+/* ---------- KONTAKT / FORMULARZ ---------- */
+#kontakt { background: var(--ink); padding-bottom: 120px; }
+#kontakt .wrap { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: .9fr 1.1fr; gap: 56px; align-items: start; }
+#kontakt .info h2 { font-family: var(--heading); font-weight: 300; font-size: clamp(28px, 3.2vw, 42px); line-height: 1.15; margin-bottom: 20px; }
+#kontakt .info h2 i { font-style: italic; color: var(--warm-white-dim); }
+#kontakt .info p { font-size: 14px; line-height: 1.9; color: var(--warm-white-dim); margin-bottom: 26px; max-width: 42ch; }
+#kontakt .info .row { display: flex; flex-direction: column; gap: 3px; margin-bottom: 18px; }
+#kontakt .info .row .l { font-size: 8px; letter-spacing: .26em; text-transform: uppercase; color: var(--concrete-dim); }
+#kontakt .info .row a, #kontakt .info .row span { font-size: 15px; color: var(--warm-white); text-decoration: none; }
+#kontakt .info .row a:hover { color: var(--accent); }
+form.quote { background: rgba(244, 240, 234, 0.03); border: 1px solid rgba(244, 240, 234, 0.08); padding: 34px 32px; }
+form.quote .fg { margin-bottom: 18px; }
+form.quote label { display: block; font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--concrete-dim); margin-bottom: 8px; }
+form.quote label .req { color: var(--accent); }
+form.quote input, form.quote textarea {
+  width: 100%; background: rgba(14, 13, 12, 0.5); border: 1px solid rgba(244, 240, 234, 0.14);
+  color: var(--warm-white); font-family: var(--body); font-size: 14px; padding: 13px 15px; transition: border-color .3s ease;
+}
+form.quote input::placeholder, form.quote textarea::placeholder { color: var(--concrete-dim); opacity: .7; }
+form.quote input:focus, form.quote textarea:focus { outline: none; border-color: var(--accent); }
+form.quote textarea { resize: vertical; min-height: 96px; }
+form.quote .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+form.quote button {
+  width: 100%; margin-top: 6px; padding: 16px; background: var(--accent); color: var(--ink); border: none;
+  font-family: var(--body); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; font-weight: 600;
+  cursor: pointer; transition: box-shadow .3s ease, transform .3s ease;
+}
+form.quote button:hover { box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
+form.quote .consent { display: flex; gap: 11px; align-items: flex-start; margin-bottom: 20px; }
+form.quote .consent input { width: 16px; height: 16px; flex: none; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+form.quote .consent label { margin: 0; font-size: 11px; letter-spacing: 0; text-transform: none; line-height: 1.65; color: var(--concrete-dim); }
+form.quote .consent label a { color: var(--accent); text-decoration: none; }
+form.quote .consent label a:hover { text-decoration: underline; }
+form.quote .consent label .req { color: var(--accent); }
+form.quote .note { margin-top: 14px; font-size: 11px; line-height: 1.6; color: var(--concrete-dim); }
+form.quote .note a { color: var(--accent); text-decoration: none; }
+form.quote .status { margin-top: 16px; font-size: 13px; padding: 12px 14px; display: none; }
+form.quote .status.ok { display: block; background: rgba(120, 180, 120, 0.12); border: 1px solid rgba(120, 180, 120, 0.35); color: #bfe3bf; }
+form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); border: 1px solid rgba(200, 90, 90, 0.35); color: #e6b4b4; }
+@media (max-width: 820px) { #kontakt .wrap { grid-template-columns: 1fr; gap: 36px; } form.quote .grid2 { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -335,6 +571,29 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
 <div id="grain"></div>
 <div id="vignette"></div>
 <canvas id="particles"></canvas>
+
+<nav id="topnav">
+  <a class="logo" href="#top" data-nav>Modernfas</a>
+  <div class="links">
+    <a href="#about" data-nav>O nas</a>
+    <a href="#gallery" data-nav>Realizacje</a>
+    <a href="#opinie" data-nav>Opinie</a>
+    <a href="#certyfikaty" data-nav>Certyfikaty</a>
+    <a href="#kontakt" data-nav>Kontakt</a>
+    <a class="nav-cta" href="#kontakt" data-nav>Bezpłatna wycena</a>
+  </div>
+  <button class="burger" id="burger" aria-label="Otwórz menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div id="mobile-menu">
+  <button class="mclose" id="mclose" aria-label="Zamknij menu">×</button>
+  <a href="#about" data-nav>O nas</a>
+  <a href="#gallery" data-nav>Realizacje</a>
+  <a href="#opinie" data-nav>Opinie</a>
+  <a href="#certyfikaty" data-nav>Certyfikaty</a>
+  <a href="#kontakt" data-nav>Kontakt</a>
+  <a href="#kontakt" data-nav style="color:var(--accent)">Bezpłatna wycena</a>
+</div>
 
 <div id="loader">
   <div class="line"></div>
@@ -356,6 +615,11 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
   </span>
   <span class="plabel">Odtwórz animację</span>
 </button>
+
+<div id="float-cta">
+  <a class="fc-call" href="tel:+48516472845" aria-label="Zadzwoń"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.3 1l-2.1 2.2z"/></svg>Zadzwoń</a>
+  <a class="fc-quote" href="#kontakt" data-nav aria-label="Wyceń"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v12H7l-3 3V4z"/></svg>Wyceń</a>
+</div>
 
 <nav id="chapters" aria-label="Rozdziały">
   <div class="dot" data-idx="0"><span class="lbl">Start</span></div>
@@ -464,9 +728,26 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
       <div class="card">
         <div class="cname">MODERNFAS</div>
         <div class="crole">Elewacje, które oddychają ciepłem · od 2011</div>
-        <div class="cdet">modernfas1@gmail.com<br>516 472 845 · 533 139 174<br>Jakub i Damian · Realizacje w całej Polsce</div>
+        <div class="cdet"><a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a><br><a href="tel:+48516472845">516 472 845</a> · <a href="tel:+48533139174">533 139 174</a><br>Jakub i Damian · Realizacje w całej Polsce</div>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="txt reveal-up">
+      <div class="overline">O nas</div>
+      <h2>Dwóch fachowców i jedna zasada — <i>elewacja robiona jak dla siebie</i></h2>
+      <p>Modernfas tworzą Jakub i Damian — ekipa, która od 2011 roku ociepla domy w systemie ETICS. Zaczynaliśmy od pojedynczych domów jednorodzinnych, dziś realizujemy elewacje w całej Polsce.</p>
+      <p>Nie podnajmujemy prac przypadkowym brygadom. Na budowie jesteśmy osobiście — od listwy startowej po ostatni parapet. Każdy etap dokumentujemy zdjęciami, a materiały dobieramy pod konkretną ścianę, nie pod najniższą cenę.</p>
+      <div class="mini">
+        <div class="m"><div class="n">15</div><div class="c">lat na rusztowaniu</div></div>
+        <div class="m"><div class="n">100<em>+</em></div><div class="c">ocieplonych domów</div></div>
+        <div class="m"><div class="n">10</div><div class="c">lat gwarancji</div></div>
+      </div>
+    </div>
+    <div class="photo reveal-up"><span class="ph-ico">✦</span><span class="ph-txt">Zdjęcie zespołu<br>wkrótce</span></div>
   </div>
 </section>
 
@@ -487,9 +768,123 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
   </div>
 </section>
 
+<section class="section" id="opinie">
+  <div class="head">
+    <div class="overline">Opinie</div>
+    <h2 class="stitle">Co mówią <i>nasi klienci</i></h2>
+  </div>
+  <div class="grid">
+    <div class="tcard reveal-up">
+      <div class="stars">★★★★★</div>
+      <div class="ttext">„Ekipa konkretna i czysta robota. Elewacja skończona w terminie, a różnicę w cieple czuć już pierwszej zimy."</div>
+      <div class="tmeta"><div class="tname">Marcin K.</div><div class="tloc">Piaseczno</div></div>
+    </div>
+    <div class="tcard reveal-up">
+      <div class="stars">★★★★★</div>
+      <div class="ttext">„Doradzili grafit zamiast białego styropianu i mieli rację. Wszystko wytłumaczone po ludzku, bez wciskania."</div>
+      <div class="tmeta"><div class="tname">Anna W.</div><div class="tloc">Wrocław</div></div>
+    </div>
+    <div class="tcard reveal-up">
+      <div class="stars">★★★★★</div>
+      <div class="ttext">„Stary dom rodziców wyglądał po ociepleniu jak nowy. Panowie dokładni, każdy etap pokazany na zdjęciach."</div>
+      <div class="tmeta"><div class="tname">Tomasz L.</div><div class="tloc">Kraków</div></div>
+    </div>
+    <div class="tcard reveal-up">
+      <div class="stars">★★★★★</div>
+      <div class="ttext">„Wycena szybka i uczciwa, bez ukrytych kosztów na koniec. Polecam każdemu, kto planuje termomodernizację."</div>
+      <div class="tmeta"><div class="tname">Katarzyna S.</div><div class="tloc">Poznań</div></div>
+    </div>
+    <div class="tcard reveal-up">
+      <div class="stars">★★★★★</div>
+      <div class="ttext">„Solidne kołkowanie, równiutki tynk, dopracowane parapety. Widać, że robią to od lat i znają się na rzeczy."</div>
+      <div class="tmeta"><div class="tname">Paweł R.</div><div class="tloc">Łódź</div></div>
+    </div>
+    <div class="tcard reveal-up">
+      <div class="stars">★★★★★</div>
+      <div class="ttext">„Kontakt bez problemu, dojechali mimo że to nie ich okolica. Elewacja trzyma się świetnie już trzeci rok."</div>
+      <div class="tmeta"><div class="tname">Grzegorz M.</div><div class="tloc">Katowice</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="certyfikaty">
+  <div class="head">
+    <div class="overline">Jakość i gwarancja</div>
+    <h2 class="stitle">Pracujemy w systemach <i>Weber</i></h2>
+  </div>
+  <p class="lead reveal-up">Ocieplenia wykonujemy w kompletnych systemach ETICS marki Weber (Saint-Gobain) — jednego z najbardziej rozpoznawalnych producentów chemii budowlanej w Europie. Kompletny system z jednej ręki oznacza, że klej, styropian, siatka, grunt i tynk są ze sobą certyfikowane i objęte gwarancją producenta — nie mieszamy materiałów różnych firm.</p>
+  <div class="cgrid">
+    <div class="ccard reveal-up">
+      <div class="ci">◇</div>
+      <h3>Kompletny system ETICS</h3>
+      <p>Wszystkie warstwy — od kleju po tynk — pochodzą z jednego, przebadanego systemu Weber. To warunek prawidłowej gwarancji.</p>
+    </div>
+    <div class="ccard reveal-up">
+      <div class="ci">✓</div>
+      <h3>Aprobaty i deklaracje</h3>
+      <p>System posiada Europejską Ocenę Techniczną (ETA) i deklaracje właściwości użytkowych, które potwierdzają parametry każdej warstwy.</p>
+    </div>
+    <div class="ccard reveal-up">
+      <div class="ci">⛨</div>
+      <h3>Gwarancja</h3>
+      <p>Na wykonane ocieplenie udzielamy 10 lat gwarancji, a użyte materiały objęte są gwarancją producenta Weber.</p>
+    </div>
+    <div class="ccard reveal-up">
+      <div class="ci">☀</div>
+      <h3>Trwałość i kolor</h3>
+      <p>Tynki Weber z ochroną przed algami i wysoką odpornością na promieniowanie UV — elewacja zachowuje kolor przez lata.</p>
+    </div>
+  </div>
+  <div class="cbadge reveal-up">
+    <div class="bt"><b>Chcesz mieć pewność?</b> Po odbiorze przekazujemy komplet dokumentów — kartę gwarancyjną oraz deklaracje właściwości użytkowych na użyte materiały.</div>
+  </div>
+</section>
+
+<section class="section" id="kontakt">
+  <div class="wrap">
+    <div class="info reveal-up">
+      <div class="overline">Kontakt</div>
+      <h2>Bezpłatna wycena <i>w 48 godzin</i></h2>
+      <p>Zostaw namiary albo zadzwoń. Umówimy obmiar, dobierzemy system i przygotujemy wycenę bez zobowiązań.</p>
+      <div class="row"><span class="l">Telefon</span><a href="tel:+48516472845">516 472 845</a><a href="tel:+48533139174">533 139 174</a></div>
+      <div class="row"><span class="l">E-mail</span><a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a></div>
+      <div class="row"><span class="l">Obszar</span><span>Realizacje w całej Polsce</span></div>
+      <div class="row"><span class="l">Zespół</span><span>Jakub i Damian</span></div>
+    </div>
+    <form class="quote" id="quote-form" novalidate>
+      <div class="fg">
+        <label>Imię <span class="req">*</span></label>
+        <input type="text" name="name" autocomplete="name" placeholder="Jan Kowalski">
+      </div>
+      <div class="grid2">
+        <div class="fg">
+          <label>Telefon <span class="req">*</span></label>
+          <input type="tel" name="phone" autocomplete="tel" placeholder="500 600 700">
+        </div>
+        <div class="fg">
+          <label>Lokalizacja <span class="req">*</span></label>
+          <input type="text" name="location" placeholder="np. Warszawa">
+        </div>
+      </div>
+      <div class="fg">
+        <label>Wiadomość (metraż, rodzaj domu…)</label>
+        <textarea name="message" placeholder="Dom parterowy ok. 120 m², ocieplenie ścian…"></textarea>
+      </div>
+      <div class="consent">
+        <input type="checkbox" name="consent" id="consent">
+        <label for="consent">Wyrażam zgodę na przetwarzanie moich danych osobowych (imię, telefon, lokalizacja) przez Modernfas w celu przygotowania i przedstawienia oferty. <a href="polityka-prywatnosci.html" target="_blank" rel="noopener">Polityka prywatności</a>. <span class="req">*</span></label>
+      </div>
+      <button type="submit">Wyślij zapytanie</button>
+      <div class="note">Klikając „Wyślij", otworzysz swój program pocztowy z gotową treścią do wysłania na nasz adres. Wolisz szybciej? Zadzwoń: <a href="tel:+48516472845">516 472 845</a>.</div>
+      <div class="status"></div>
+    </form>
+  </div>
+</section>
+
 <footer>
   <div class="fbrand">Modernfas</div>
-  <div class="flegal">© 2026 Modernfas · Elewacje, które oddychają ciepłem · Systemy ociepleń ETICS od 2011 · modernfas1@gmail.com · 516 472 845 · 533 139 174</div>
+  <div class="flegal">© 2026 Modernfas · Elewacje, które oddychają ciepłem · Systemy ociepleń ETICS od 2011 · <a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a> · <a href="tel:+48516472845">516 472 845</a> · <a href="tel:+48533139174">533 139 174</a></div>
+  <div class="flegal"><a href="polityka-prywatnosci.html">Polityka prywatności</a> · Administrator danych: Modernfas</div>
 </footer>
 
 <script>
@@ -527,7 +922,7 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
     cdot.style.left = mx + 'px'; cdot.style.top = my + 'px';
   });
   document.addEventListener('mouseover', function (e) {
-    if (e.target.closest('a, .btn, .dot, .gcell, figure, #play-btn')) cring.classList.add('hover');
+    if (e.target.closest('a, .btn, .dot, .gcell, figure, #play-btn, button, input, textarea, label, .tcard, .ccard, .burger')) cring.classList.add('hover');
     else cring.classList.remove('hover');
   });
 
@@ -814,6 +1209,7 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
     if (sync) syncScrollToFilm();
     filmLayer.classList.remove('on');
     playBtn.classList.remove('playing');
+    try { film.currentTime = 0; } catch (e) {} // reset for a clean next start
   }
   playBtn.addEventListener('click', function () {
     if (playing) { stopFilm(true); return; }
@@ -821,8 +1217,15 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
     playing = true;
     playBtn.classList.add('playing');
     filmLayer.classList.add('on');
-    film.currentTime = 0;
-    film.play();
+    // currentTime is already 0 at rest, so we never seek before play() —
+    // seeking a not-yet-buffered video is what interrupts playback.
+    var p = film.play();
+    if (p && p.catch) {
+      p.catch(function () {
+        // one retry once more data has buffered
+        film.play().catch(function () { stopFilm(false); });
+      });
+    }
   });
   film.addEventListener('ended', function () { stopFilm(true); });
   // scrolling / touching hands control back to the user
@@ -850,6 +1253,77 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
         if (target) target.style.transform = 'translateY(' + (p * amt) + 'px)';
       });
     }, { passive: true });
+  }
+
+  /* ---------- Navigation, floating CTA, mobile menu ---------- */
+  var topnav = document.getElementById('topnav');
+  var floatCta = document.getElementById('float-cta');
+  var mobileMenu = document.getElementById('mobile-menu');
+  var burger = document.getElementById('burger');
+  var mclose = document.getElementById('mclose');
+
+  function onNavScroll() {
+    var y = window.pageYOffset;
+    if (topnav) { topnav.classList.toggle('show', y > 60); topnav.classList.toggle('solid', y > 130); }
+    if (floatCta) floatCta.classList.toggle('show', y > 400);
+  }
+  window.addEventListener('scroll', onNavScroll, { passive: true });
+  onNavScroll();
+
+  function closeMobileMenu() { if (mobileMenu) mobileMenu.classList.remove('open'); }
+  if (burger) burger.addEventListener('click', function () { if (mobileMenu) mobileMenu.classList.add('open'); });
+  if (mclose) mclose.addEventListener('click', closeMobileMenu);
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-nav]')).forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var href = a.getAttribute('href');
+      if (!href || href.charAt(0) !== '#') return;
+      e.preventDefault();
+      closeMobileMenu();
+      if (href === '#top' || href === '#anim') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+      var el = document.querySelector(href);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  /* ---------- Reveal-up on scroll (new sections) ---------- */
+  var ruObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); ruObs.unobserve(en.target); } });
+  }, { threshold: 0.12 });
+  Array.prototype.slice.call(document.querySelectorAll('.reveal-up')).forEach(function (el) { ruObs.observe(el); });
+
+  /* ---------- Quote form ---------- */
+  /* Domyślnie wysyłka otwiera program pocztowy użytkownika (działa bez serwera,
+     idealne pod hosting statyczny na Vercel). Aby odbierać zgłoszenia prosto na
+     skrzynkę bez otwierania poczty: załóż darmowe konto na formspree.io i zamień
+     blok mailto poniżej na:
+       fetch('https://formspree.io/f/TWOJE_ID', { method: 'POST',
+         headers: { 'Accept': 'application/json' }, body: new FormData(qform) }); */
+  var qform = document.getElementById('quote-form');
+  if (qform) {
+    qform.addEventListener('submit', function (e) {
+      e.preventDefault();
+      function val(n) { var el = qform.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ''; }
+      var name = val('name'), phone = val('phone'), loc = val('location'), msg = val('message');
+      var consent = qform.querySelector('[name="consent"]');
+      var status = qform.querySelector('.status');
+      if (!name || !phone || !loc) {
+        status.className = 'status err';
+        status.textContent = 'Uzupełnij imię, telefon i lokalizację.';
+        return;
+      }
+      if (consent && !consent.checked) {
+        status.className = 'status err';
+        status.textContent = 'Zaznacz zgodę na przetwarzanie danych, abyśmy mogli przygotować ofertę.';
+        return;
+      }
+      var subject = 'Zapytanie o wycenę — ' + name + ' (' + loc + ')';
+      var body = 'Imię: ' + name + '\nTelefon: ' + phone + '\nLokalizacja: ' + loc + '\n\nWiadomość:\n' + (msg || '—');
+      window.location.href = 'mailto:modernfas1@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      status.className = 'status ok';
+      status.textContent = 'Dziękujemy! Otworzyliśmy wiadomość w Twoim programie pocztowym — wyślij ją, a oddzwonimy. Jeśli okno się nie pojawiło, zadzwoń: 516 472 845.';
+      qform.reset();
+    });
   }
 
   /* ---------- Resize ---------- */
