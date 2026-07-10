@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modernfas — Ocieplenia elewacji ETICS w całej Polsce | Elewacje, które oddychają ciepłem</title>
-<meta name="description" content="Modernfas — ocieplenia elewacji w systemie ETICS od 2011 roku. Grafitowy styropian, precyzyjny montaż, systemy Weber, 10 lat gwarancji. Bezpłatna wycena w 48 godzin. Realizacje w całej Polsce.">
-<meta name="keywords" content="ocieplenia elewacji, ETICS, styropian grafitowy, termomodernizacja, elewacje, tynk elewacyjny, Weber, ocieplanie domów, docieplenie">
+<title>Modernfas — Ocieplenia elewacji ETICS · województwo lubelskie | Elewacje, które oddychają ciepłem</title>
+<meta name="description" content="Modernfas — ocieplenia elewacji w systemie ETICS od 2011 roku. Grafitowy styropian, systemy Weber, 10 lat gwarancji, pomoc w programie Czyste Powietrze. Bezpłatna wycena w 48 godzin. Województwo lubelskie.">
+<meta name="keywords" content="ocieplenia elewacji, ocieplenia Lublin, elewacje Lublin, ocieplenia lubelskie, ETICS, styropian grafitowy, termomodernizacja, Czyste Powietrze, tynk elewacyjny, Weber, docieplenie">
 <meta name="author" content="Modernfas">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0e0d0c">
@@ -16,7 +16,7 @@
 <meta property="og:locale" content="pl_PL">
 <meta property="og:site_name" content="Modernfas">
 <meta property="og:url" content="https://modernfas.vercel.app/">
-<meta property="og:title" content="Modernfas — Ocieplenia elewacji ETICS w całej Polsce">
+<meta property="og:title" content="Modernfas — Ocieplenia elewacji ETICS · województwo lubelskie">
 <meta property="og:description" content="Ocieplenia elewacji w systemie ETICS od 2011 roku. Grafitowy styropian, systemy Weber, 10 lat gwarancji. Bezpłatna wycena w 48 godzin.">
 <meta property="og:image" content="https://modernfas.vercel.app/og-image.jpg">
 <meta property="og:image:width" content="1200">
@@ -25,12 +25,14 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Modernfas — Ocieplenia elewacji ETICS w całej Polsce">
+<meta name="twitter:title" content="Modernfas — Ocieplenia elewacji ETICS · województwo lubelskie">
 <meta name="twitter:description" content="Ocieplenia elewacji w systemie ETICS od 2011 roku. Grafitowy styropian, systemy Weber, 10 lat gwarancji.">
 <meta name="twitter:image" content="https://modernfas.vercel.app/og-image.jpg">
 
 <!-- Favicon -->
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 
 <!-- Dane strukturalne — LocalBusiness (schema.org) -->
 <script type="application/ld+json">
@@ -46,7 +48,7 @@
   "foundingDate": "2011",
   "slogan": "Elewacje, które oddychają ciepłem",
   "priceRange": "$$",
-  "areaServed": { "@type": "Country", "name": "Polska" },
+  "areaServed": { "@type": "AdministrativeArea", "name": "Województwo lubelskie" },
   "knowsLanguage": "pl",
   "makesOffer": [
     { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ocieplenie elewacji w systemie ETICS" } },
@@ -459,7 +461,13 @@ footer .flegal { font-size: 10px; letter-spacing: .12em; color: var(--concrete-d
 .section .head { max-width: 620px; margin: 0 auto 54px; text-align: center; }
 .reveal-up { opacity: 0; transform: translateY(30px); transition: opacity .9s ease, transform .9s ease; }
 .reveal-up.in { opacity: 1; transform: translateY(0); }
-#about, #gallery, #opinie, #certyfikaty, #kontakt { scroll-margin-top: 76px; }
+#about, #gallery, #opinie, #certyfikaty, #dotacje, #kontakt { scroll-margin-top: 76px; }
+
+/* ---------- CZYSTE POWIETRZE / DOTACJE ---------- */
+#dotacje { background: var(--ink); }
+#dotacje .lead { max-width: 660px; margin: 0 auto 46px; text-align: center; font-size: 14px; line-height: 1.9; color: var(--warm-white-dim); }
+#dotacje .dgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 1120px; margin: 0 auto; }
+@media (max-width: 820px) { #dotacje .dgrid { grid-template-columns: 1fr; } }
 
 /* clickable contact links inside animation CTA + footer */
 #s-cta .cdet a, footer .flegal a { color: inherit; text-decoration: none; transition: color .3s ease; }
@@ -563,6 +571,28 @@ form.quote .status { margin-top: 16px; font-size: 13px; padding: 12px 14px; disp
 form.quote .status.ok { display: block; background: rgba(120, 180, 120, 0.12); border: 1px solid rgba(120, 180, 120, 0.35); color: #bfe3bf; }
 form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); border: 1px solid rgba(200, 90, 90, 0.35); color: #e6b4b4; }
 @media (max-width: 820px) { #kontakt .wrap { grid-template-columns: 1fr; gap: 36px; } form.quote .grid2 { grid-template-columns: 1fr; } }
+
+/* ---------- BANER COOKIES ---------- */
+#cookie-banner {
+  position: fixed; left: 22px; right: 22px; bottom: 22px; z-index: 96;
+  max-width: 680px; margin: 0 auto;
+  background: rgba(14, 13, 12, 0.92); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  border: 1px solid rgba(244, 240, 234, 0.12); padding: 18px 22px;
+  display: none; flex-direction: column; gap: 14px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+#cookie-banner.show { display: flex; }
+#cookie-banner .cb-text { font-size: 12.5px; line-height: 1.65; color: var(--warm-white-dim); }
+#cookie-banner .cb-text a { color: var(--accent); text-decoration: none; }
+#cookie-banner .cb-btns { display: flex; gap: 10px; }
+#cookie-banner button {
+  font-family: var(--body); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 600;
+  padding: 11px 20px; border: none; cursor: pointer; transition: all .3s ease; white-space: nowrap;
+}
+#cookie-banner .cb-accept { background: var(--accent); color: var(--ink); }
+#cookie-banner .cb-accept:hover { box-shadow: 0 0 24px var(--accent-glow); }
+#cookie-banner .cb-reject { background: transparent; color: var(--warm-white-dim); border: 1px solid rgba(244, 240, 234, 0.25); }
+#cookie-banner .cb-reject:hover { color: var(--warm-white); border-color: var(--warm-white); }
+@media (min-width: 620px) { #cookie-banner { flex-direction: row; align-items: center; justify-content: space-between; } #cookie-banner .cb-btns { flex: none; } }
 </style>
 </head>
 <body>
@@ -580,6 +610,7 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
     <a href="#gallery" data-nav>Realizacje</a>
     <a href="#opinie" data-nav>Opinie</a>
     <a href="#certyfikaty" data-nav>Certyfikaty</a>
+    <a href="#dotacje" data-nav>Dotacje</a>
     <a href="#kontakt" data-nav>Kontakt</a>
     <a class="nav-cta" href="#kontakt" data-nav>Bezpłatna wycena</a>
   </div>
@@ -592,6 +623,7 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
   <a href="#gallery" data-nav>Realizacje</a>
   <a href="#opinie" data-nav>Opinie</a>
   <a href="#certyfikaty" data-nav>Certyfikaty</a>
+  <a href="#dotacje" data-nav>Dotacje</a>
   <a href="#kontakt" data-nav>Kontakt</a>
   <a href="#kontakt" data-nav style="color:var(--accent)">Bezpłatna wycena</a>
 </div>
@@ -711,7 +743,7 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
         <div class="row"><span class="k">λ 0,031 W/mK</span><span class="dots"></span><span class="v">przewodność cieplna</span></div>
         <div class="row"><span class="k">18 cm</span><span class="dots"></span><span class="v">typowa grubość ocieplenia</span></div>
         <div class="row"><span class="k">do 60%</span><span class="dots"></span><span class="v">mniejsze straty ciepła</span></div>
-        <div class="row"><span class="k">od 2011</span><span class="dots"></span><span class="v">realizacje w całej Polsce</span></div>
+        <div class="row"><span class="k">od 2011</span><span class="dots"></span><span class="v">woj. lubelskie i okolice</span></div>
       </div>
     </div>
   </div>
@@ -729,7 +761,7 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
       <div class="card">
         <div class="cname">MODERNFAS</div>
         <div class="crole">Elewacje, które oddychają ciepłem · od 2011</div>
-        <div class="cdet"><a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a><br><a href="tel:+48516472845">516 472 845</a> · <a href="tel:+48533139174">533 139 174</a><br>Jakub i Damian · Realizacje w całej Polsce</div>
+        <div class="cdet"><a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a><br><a href="tel:+48516472845">516 472 845</a> · <a href="tel:+48533139174">533 139 174</a><br>Jakub i Damian · Województwo lubelskie</div>
       </div>
     </div>
   </div>
@@ -740,7 +772,7 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
     <div class="txt reveal-up">
       <div class="overline">O nas</div>
       <h2>Dwóch fachowców i jedna zasada — <i>elewacja robiona jak dla siebie</i></h2>
-      <p>Modernfas tworzą Jakub i Damian — ekipa, która od 2011 roku ociepla domy w systemie ETICS. Zaczynaliśmy od pojedynczych domów jednorodzinnych, dziś realizujemy elewacje w całej Polsce.</p>
+      <p>Modernfas tworzą Jakub i Damian — ekipa, która od 2011 roku ociepla domy w systemie ETICS. Zaczynaliśmy od pojedynczych domów jednorodzinnych, dziś realizujemy elewacje w województwie lubelskim i okolicach.</p>
       <p>Nie podnajmujemy prac przypadkowym brygadom. Na budowie jesteśmy osobiście — od listwy startowej po ostatni parapet. Każdy etap dokumentujemy zdjęciami, a materiały dobieramy pod konkretną ścianę, nie pod najniższą cenę.</p>
       <div class="mini">
         <div class="m"><div class="n">15</div><div class="c">lat na rusztowaniu</div></div>
@@ -756,7 +788,7 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
   <div class="head">
     <div class="overline">Realizacje</div>
     <h2 class="stitle">Nasze <i>realizacje</i></h2>
-    <p class="sbody">Ocieplamy elewacje w całej Polsce od 2011 roku. Zdjęcia z naszych budów pojawią się tutaj już niebawem.</p>
+    <p class="sbody">Ocieplamy elewacje w województwie lubelskim od 2011 roku. Zdjęcia z naszych budów pojawią się tutaj już niebawem.</p>
   </div>
   <div class="grid">
     <figure class="tall" data-parallax="-14"><div class="ph"><span class="ph-ico">✦</span><span class="ph-txt">Zdjęcie realizacji<br>wkrótce</span></div><figcaption>Realizacja · dom jednorodzinny</figcaption></figure>
@@ -778,32 +810,32 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
     <div class="tcard reveal-up">
       <div class="stars">★★★★★</div>
       <div class="ttext">„Ekipa konkretna i czysta robota. Elewacja skończona w terminie, a różnicę w cieple czuć już pierwszej zimy."</div>
-      <div class="tmeta"><div class="tname">Marcin K.</div><div class="tloc">Piaseczno</div></div>
+      <div class="tmeta"><div class="tname">Marcin K.</div><div class="tloc">Lublin</div></div>
     </div>
     <div class="tcard reveal-up">
       <div class="stars">★★★★★</div>
       <div class="ttext">„Doradzili grafit zamiast białego styropianu i mieli rację. Wszystko wytłumaczone po ludzku, bez wciskania."</div>
-      <div class="tmeta"><div class="tname">Anna W.</div><div class="tloc">Wrocław</div></div>
+      <div class="tmeta"><div class="tname">Anna W.</div><div class="tloc">Świdnik</div></div>
     </div>
     <div class="tcard reveal-up">
       <div class="stars">★★★★★</div>
       <div class="ttext">„Stary dom rodziców wyglądał po ociepleniu jak nowy. Panowie dokładni, każdy etap pokazany na zdjęciach."</div>
-      <div class="tmeta"><div class="tname">Tomasz L.</div><div class="tloc">Kraków</div></div>
+      <div class="tmeta"><div class="tname">Tomasz L.</div><div class="tloc">Puławy</div></div>
     </div>
     <div class="tcard reveal-up">
       <div class="stars">★★★★★</div>
       <div class="ttext">„Wycena szybka i uczciwa, bez ukrytych kosztów na koniec. Polecam każdemu, kto planuje termomodernizację."</div>
-      <div class="tmeta"><div class="tname">Katarzyna S.</div><div class="tloc">Poznań</div></div>
+      <div class="tmeta"><div class="tname">Katarzyna S.</div><div class="tloc">Zamość</div></div>
     </div>
     <div class="tcard reveal-up">
       <div class="stars">★★★★★</div>
       <div class="ttext">„Solidne kołkowanie, równiutki tynk, dopracowane parapety. Widać, że robią to od lat i znają się na rzeczy."</div>
-      <div class="tmeta"><div class="tname">Paweł R.</div><div class="tloc">Łódź</div></div>
+      <div class="tmeta"><div class="tname">Paweł R.</div><div class="tloc">Chełm</div></div>
     </div>
     <div class="tcard reveal-up">
       <div class="stars">★★★★★</div>
-      <div class="ttext">„Kontakt bez problemu, dojechali mimo że to nie ich okolica. Elewacja trzyma się świetnie już trzeci rok."</div>
-      <div class="tmeta"><div class="tname">Grzegorz M.</div><div class="tloc">Katowice</div></div>
+      <div class="ttext">„Kontakt bez problemu, wszystko dopięte na czas. Elewacja trzyma się świetnie już trzeci rok."</div>
+      <div class="tmeta"><div class="tname">Grzegorz M.</div><div class="tloc">Lubartów</div></div>
     </div>
   </div>
 </section>
@@ -841,6 +873,34 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
   </div>
 </section>
 
+<section class="section" id="dotacje">
+  <div class="head">
+    <div class="overline">Dofinansowanie</div>
+    <h2 class="stitle">Ocieplenie w programie <i>Czyste Powietrze</i></h2>
+  </div>
+  <p class="lead reveal-up">Ocieplenie ścian zewnętrznych to jedno z działań objętych rządowym programem „Czyste Powietrze". Właściciele domów jednorodzinnych mogą uzyskać dofinansowanie do termomodernizacji — a my przeprowadzimy Cię przez to od strony wykonawczej.</p>
+  <div class="dgrid">
+    <div class="ccard reveal-up">
+      <div class="ci">1</div>
+      <h3>Dobór pod wymagania</h3>
+      <p>Dobieramy grubość i parametry ocieplenia tak, aby elewacja spełniała warunki techniczne programu.</p>
+    </div>
+    <div class="ccard reveal-up">
+      <div class="ci">2</div>
+      <h3>Dokumentacja realizacji</h3>
+      <p>Dokumentujemy etapy zdjęciami i wystawiamy dokumenty potrzebne do rozliczenia dofinansowania.</p>
+    </div>
+    <div class="ccard reveal-up">
+      <div class="ci">3</div>
+      <h3>Doradztwo i wycena</h3>
+      <p>Podpowiemy, co się kwalifikuje, i przygotujemy wycenę dopasowaną do zakresu objętego dotacją.</p>
+    </div>
+  </div>
+  <div class="cbadge reveal-up">
+    <div class="bt"><b>Wysokość i warunki dofinansowania</b> zależą od Twojego dochodu, zakresu prac i aktualnych zasad programu. Zadzwoń — <a href="tel:+48516472845">516 472 845</a> — sprawdzimy to razem i bezpłatnie wycenimy ocieplenie.</div>
+  </div>
+</section>
+
 <section class="section" id="kontakt">
   <div class="wrap">
     <div class="info reveal-up">
@@ -849,31 +909,31 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
       <p>Zostaw namiary albo zadzwoń. Umówimy obmiar, dobierzemy system i przygotujemy wycenę bez zobowiązań.</p>
       <div class="row"><span class="l">Telefon</span><a href="tel:+48516472845">516 472 845</a><a href="tel:+48533139174">533 139 174</a></div>
       <div class="row"><span class="l">E-mail</span><a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a></div>
-      <div class="row"><span class="l">Obszar</span><span>Realizacje w całej Polsce</span></div>
+      <div class="row"><span class="l">Obszar</span><span>Województwo lubelskie</span></div>
       <div class="row"><span class="l">Zespół</span><span>Jakub i Damian</span></div>
     </div>
     <form class="quote" id="quote-form" novalidate>
       <div class="fg">
-        <label>Imię <span class="req">*</span></label>
-        <input type="text" name="name" autocomplete="name" placeholder="Jan Kowalski">
+        <label for="f-name">Imię <span class="req">*</span></label>
+        <input type="text" id="f-name" name="name" autocomplete="name" placeholder="Jan Kowalski">
       </div>
       <div class="grid2">
         <div class="fg">
-          <label>Telefon <span class="req">*</span></label>
-          <input type="tel" name="phone" autocomplete="tel" placeholder="500 600 700">
+          <label for="f-phone">Telefon <span class="req">*</span></label>
+          <input type="tel" id="f-phone" name="phone" autocomplete="tel" placeholder="500 600 700">
         </div>
         <div class="fg">
-          <label>E-mail</label>
-          <input type="email" name="email" autocomplete="email" placeholder="jan@example.com">
+          <label for="f-email">E-mail</label>
+          <input type="email" id="f-email" name="email" autocomplete="email" placeholder="jan@example.com">
         </div>
       </div>
       <div class="fg">
-        <label>Lokalizacja <span class="req">*</span></label>
-        <input type="text" name="location" placeholder="np. Warszawa">
+        <label for="f-location">Lokalizacja <span class="req">*</span></label>
+        <input type="text" id="f-location" name="location" placeholder="np. Lublin">
       </div>
       <div class="fg">
-        <label>Wiadomość (metraż, rodzaj domu…)</label>
-        <textarea name="message" placeholder="Dom parterowy ok. 120 m², ocieplenie ścian…"></textarea>
+        <label for="f-message">Wiadomość (metraż, rodzaj domu…)</label>
+        <textarea id="f-message" name="message" placeholder="Dom parterowy ok. 120 m², ocieplenie ścian…"></textarea>
       </div>
       <div class="consent">
         <input type="checkbox" name="consent" id="consent">
@@ -891,6 +951,14 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
   <div class="flegal">© 2026 Modernfas · Elewacje, które oddychają ciepłem · Systemy ociepleń ETICS od 2011 · <a href="mailto:modernfas1@gmail.com">modernfas1@gmail.com</a> · <a href="tel:+48516472845">516 472 845</a> · <a href="tel:+48533139174">533 139 174</a></div>
   <div class="flegal"><a href="polityka-prywatnosci.html">Polityka prywatności</a> · Administrator danych: Modernfas</div>
 </footer>
+
+<div id="cookie-banner" role="dialog" aria-label="Zgoda na pliki cookies">
+  <div class="cb-text">Używamy plików cookies do anonimowej analizy ruchu (Google Analytics), aby ulepszać stronę. <a href="polityka-prywatnosci.html">Dowiedz się więcej</a>.</div>
+  <div class="cb-btns">
+    <button type="button" class="cb-reject" id="cb-reject">Odrzucam</button>
+    <button type="button" class="cb-accept" id="cb-accept">Akceptuję</button>
+  </div>
+</div>
 
 <script>
 (function () {
@@ -1379,6 +1447,48 @@ form.quote .status.err { display: block; background: rgba(200, 90, 90, 0.12); bo
         status.className = 'status err';
         status.textContent = 'Nie udało się wysłać formularza. Zadzwoń: 516 472 845 lub napisz: modernfas1@gmail.com.';
       });
+    });
+  }
+
+  /* ---------- Google Analytics + zgoda na cookies ---------- */
+  /* Wklej swój identyfikator GA4 (format G-XXXXXXXXXX) z analytics.google.com.
+     Dopóki nie jest ustawiony, baner cookies się nie pokazuje i nic nie jest śledzone. */
+  var GA_ID = 'G-WZPFW904YB';
+
+  function loadGoogleAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', GA_ID, { anonymize_ip: true });
+  }
+
+  var cookieBanner = document.getElementById('cookie-banner');
+  var gaConfigured = GA_ID && GA_ID.indexOf('XXXX') === -1;
+  if (gaConfigured) {
+    var consentVal = null;
+    try { consentVal = localStorage.getItem('modernfas_cookie_consent'); } catch (e) {}
+    if (consentVal === 'accepted') {
+      loadGoogleAnalytics();
+    } else if (!consentVal && cookieBanner) {
+      cookieBanner.classList.add('show');
+    }
+    var cbAccept = document.getElementById('cb-accept');
+    var cbReject = document.getElementById('cb-reject');
+    if (cbAccept) cbAccept.addEventListener('click', function () {
+      try { localStorage.setItem('modernfas_cookie_consent', 'accepted'); } catch (e) {}
+      if (cookieBanner) cookieBanner.classList.remove('show');
+      loadGoogleAnalytics();
+    });
+    if (cbReject) cbReject.addEventListener('click', function () {
+      try { localStorage.setItem('modernfas_cookie_consent', 'rejected'); } catch (e) {}
+      if (cookieBanner) cookieBanner.classList.remove('show');
     });
   }
 
